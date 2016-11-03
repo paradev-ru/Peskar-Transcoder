@@ -62,7 +62,7 @@ while true; do
 
         ffmpeg \
               -i $trans_source_path$end_file_name.mp4 -map 0-ss $ss_chunk -t $t_chunk \
-              -c copy -f mpegts $end_path$end_file_name\chunks/$end_file_name\_$name_num.ts $log_dir$end_file_name\_$name_num.log 2>&1 &
+              -c copy -f mpegts $end_path$end_file_name\chunks/$end_file_name\_$name_num.ts > $log_dir$end_file_name\_$name_num.log 2>&1 &
 
       let "name_num=name_num += 1"
       ss_chunk=$t_chunk
