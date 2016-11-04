@@ -1,10 +1,9 @@
 #!/bin/bash
 
-queue_path=/home/emedvedev/queue-video-tmp/
-source_path=/home/emedvedev/source-video-tmp/
-end_path=/home/emedvedev/end-video-tmp/
-trans_source_path=/home/emedvedev/trans-video-tmp/
-log_dir=/home/emedvedev/logs/
+queue_path=/home/torrent/queue-video-tmp/
+source_path=/home/torrent/source-video-tmp/
+end_path=/home/torrent/end-video-tmp/
+log_dir=/home/torrent/logs/
 
 video_search="Обнаружен материал объемом"
 wait_video="Ожидается пауза при копировании в папку с очередью"
@@ -23,10 +22,11 @@ while true; do
       continue
     fi
 
-    date_time=`date +%H:%M_%d-%m-%Y`
+    # date_time=`date +%H:%M_%d-%m-%Y`
     next_file=`ls -t -r -1 $queue_path | sed -n -e 1p`
     mv $queue_path$next_file $source_path       # перемещаем из очереди в рабочий каталог
     end_file_name=`ls -1 $source_path`
+    end_file_n2=`ls -1 $source_path | awk -F. '{print $1}'`
 
     sleep 1
     ps_status=`ps -e | grep ffmpeg | wc -l`
@@ -36,8 +36,8 @@ while true; do
     done
 
     ffmpeg \
-          -i $source_path$end_file_name -map 0 -c:v libx264 -preset veryfast \
-          -c:a aac -f mp4 $trans_source_path$end_file_name.mp4 > $log_dir$end_file_name.log 2>&1 &
+          -i $source_path$end_file_name -map 0 -c:v libx264 -preset veryfast -g 25 -keyint_min 4\
+          -c:a aac -f mp4 $end_path$end_file_n2.mp4 > $log_dir$end_file_n2.log 2>&1 &
 
     sleep 1
     ps_status=`ps -e | grep ffmpeg | wc -l`
@@ -46,33 +46,18 @@ while true; do
       ps_status=`ps -e | grep ffmpeg | wc -l`
     done
 
-    cp $trans_source_path$end_file_name.mp4 $end_path
+    # mv $trans_source_path$end_file_n2.mp4 $end_path
 
-    full_time=`ffprobe $trans_source_path$end_file_name.mp4 2>&1 | grep Duration | awk '{print $2}' | sed s'/,//g'`
+    full_time=`ffprobe $end_path$end_file_n2.mp4 2>&1 | grep Duration | awk '{print $2}' | sed s'/,//g'`
     echo -e $full_time
-    # while [  ]; do
 
-    mkdir $end_path$end_file_name\chunks
-    ss_chunk="00:00:00"
-    t_chunk="00:00:05"
-    chunk_size=10
-    name_num=10000001
 
-      while [ "$t_chunk" \< "$full_time" ]; do
+    mkdir $end_path$end_file_n2\_chunks
 
-        ffmpeg \
-              -i $trans_source_path$end_file_name.mp4 -map 0-ss $ss_chunk -t $t_chunk \
-              -c copy -f mpegts $end_path$end_file_name\chunks/$end_file_name\_$name_num.ts > $log_dir$end_file_name\_$name_num.log 2>&1 &
-
-      let "name_num=name_num += 1"
-      ss_chunk=$t_chunk
-      t_chunk=`date -d "$t_chunk $chunk_size sec" +"%H:%M:%S"`
-
-      echo -e $ss_chunk
-      echo -e $t_chunk
-      echo -e $name_num
-
-      done
+    ffmpeg \
+          -i $end_path$end_file_n2.mp4 -map 0 -c copy -segment_time 3 \
+          -segment_list $end_path$end_file_n2/$end_file_n2.m3u8 -f segment \
+          $end_path$end_file_n2/$end_file_n2\_%08d.ts > $log_dir$end_file_n2\_seg.log 2>&1 &
 
     exit 0
     break
