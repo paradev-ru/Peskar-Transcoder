@@ -41,12 +41,12 @@ while true; do
       ps_status=`ps -e | grep ffmpeg | wc -l`
     done
 
-    mkdir $end_path$end_file_n2\_chunks
+    mkdir $end_path$end_file_n2
 
     ffmpeg \
           -i $end_path$end_file_n2.mp4 -map 0 -c copy -segment_time 3 \
-          -segment_list $end_path$end_file_n2/$end_file_n2.m3u8 -f segment \
-          $end_path$end_file_n2/$end_file_n2\_%08d.ts > $log_dir$end_file_n2\_seg.log 2>&1 &
+          -segment_list $end_path$end_file_n2\/$end_file_n2.m3u8 -f segment \
+          $end_path$end_file_n2\/$end_file_n2\_%08d.ts > $log_dir$end_file_n2\_seg.log 2>&1 &
     
     sleep 1
     ps_status=`ps -e | grep ffmpeg | wc -l`
