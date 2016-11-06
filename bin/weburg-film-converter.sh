@@ -55,9 +55,6 @@ while true; do
       ps_status=`ps -e | grep ffmpeg | wc -l`
     done
 
-    
-
-
     break
   done
 done
