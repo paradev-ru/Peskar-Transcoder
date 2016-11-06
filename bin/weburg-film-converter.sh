@@ -22,6 +22,7 @@ while true; do
     mv $queue_path$next_file $source_path       # перемещаем из очереди в рабочий каталог
     end_file_name=`ls -1 $source_path`
     end_file_n2=`ls -1 $source_path | awk -F. '{print $1}'`
+    mkdir $end_path$end_file_n2
 
     sleep 1
     ps_status=`ps -e | grep ffmpeg | wc -l`
@@ -32,7 +33,7 @@ while true; do
 
     ffmpeg \
           -i $source_path$end_file_name -map 0 -c:v libx264 -preset veryfast -g 25 -keyint_min 4\
-          -c:a aac -f mp4 $end_path$end_file_n2.mp4 > $log_dir$end_file_n2.log 2>&1 &
+          -c:a aac -f mp4 $end_path$end_file_n2/$end_file_n2.mp4 > $log_dir$end_file_n2.log 2>&1 &
 
     sleep 1
     ps_status=`ps -e | grep ffmpeg | wc -l`
@@ -41,12 +42,10 @@ while true; do
       ps_status=`ps -e | grep ffmpeg | wc -l`
     done
 
-    mkdir $end_path$end_file_n2
-
     ffmpeg \
           -i $end_path$end_file_n2.mp4 -map 0 -c copy -segment_time 3 \
-          -segment_list $end_path$end_file_n2\/$end_file_n2.m3u8 -f segment \
-          $end_path$end_file_n2\/$end_file_n2\_%08d.ts > $log_dir$end_file_n2\_seg.log 2>&1 &
+          -segment_list $end_path$end_file_n2/$end_file_n2.m3u8 -f segment \
+          $end_path$end_file_n2/$end_file_n2\_%08d.ts > $log_dir$end_file_n2\_seg.log 2>&1 &
     
     sleep 1
     ps_status=`ps -e | grep ffmpeg | wc -l`
