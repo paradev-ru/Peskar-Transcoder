@@ -29,6 +29,7 @@ next_file=`ls -t -r -1 $queue_path | sed -n -e 1p`
 if [ -d $queue_path$next_file ];then
   next_file_n2=`find $queue_path$next_file -size +10M`
   mv $next_file_n2 $source_path
+  rm -r -f $queue_path$next_file
 else
   mv $queue_path$next_file $source_path
 fi
