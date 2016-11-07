@@ -68,7 +68,7 @@ while [ "$ps_status" -gt "0" ]; do
   ps_status=`ps -e | grep ffmpeg | wc -l`
 done
 
-tar -c -f $end_path$end_file.tar $end_path$end_file
+tar -c -f $end_path$end_file.tar $end_path$end_file/*
 
 rsync -e='ssh -p 3389' -r $end_path$end_file.tar user@paradev.ru:$paradev_path
 rm -r -f $source_path* && rm -r -f $end_path* > /dev/null 2>&1
