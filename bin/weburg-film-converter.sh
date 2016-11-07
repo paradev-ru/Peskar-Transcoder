@@ -61,6 +61,6 @@ while [ "$ps_status" -gt "0" ]; do
 done
 
 rsync -e='ssh -p 3389' -r $end_path$end_file_n2 user@paradev.ru:$paradev_path
-rm -r -f $source_path* && rm -r -f $end_path* && rm -r -f $end_path* > /dev/null 2>&1
+rm -r -f $source_path* && rm -r -f $end_path* > /dev/null 2>&1
 
 exit 0
