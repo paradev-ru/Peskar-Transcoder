@@ -10,7 +10,7 @@ paradev_path=/home/user/films/
 tmp_video_size1=`du -s $queue_path | awk '{print $1}'`
 sleep 10
 
-if [ "$tmp_video_size1" -ne 1000 ]; then
+if [ "$tmp_video_size1" -lt 1000 ]; then
   exit 0
 else
   while true; do
