@@ -47,7 +47,7 @@ done
 
 ffmpeg \
       -i $source_path$source_file -map 0 -c:v libx264 -preset veryfast -g 25 -keyint_min 4\
-      -c:a aac -f mp4 $end_path$end_file/$end_file.mp4 > $log_dir$end_file.log 2>&1 &
+      -c:a aac -f mp4 $end_path$end_file.mp4 > $log_dir$end_file.log 2>&1 &
 
 sleep 1
 ps_status=`ps -e | grep ffmpeg | wc -l`
@@ -57,7 +57,7 @@ while [ "$ps_status" -gt "0" ]; do
 done
 
 ffmpeg \
-      -i $end_path$end_file/$end_file.mp4 -map 0 -c copy -segment_time 3 \
+      -i $end_path$end_file.mp4 -map 0 -c copy -segment_time 3 \
       -segment_list $end_path$end_file/$end_file.m3u8 -f segment \
       $end_path$end_file/$end_file\_%08d.ts > $log_dir$end_file\_seg.log 2>&1 &
 
@@ -68,7 +68,7 @@ while [ "$ps_status" -gt "0" ]; do
   ps_status=`ps -e | grep ffmpeg | wc -l`
 done
 
-tar -c -f $end_path$end_file.tar $end_path$end_file/*
+tar -c -f $end_path$end_file.tar $end_path$end_file/* > /dev/null 2>&1
 
 rsync -e='ssh -p 3389' -r $end_path$end_file.tar user@paradev.ru:$paradev_path
 rm -r -f $source_path* && rm -r -f $end_path* > /dev/null 2>&1
