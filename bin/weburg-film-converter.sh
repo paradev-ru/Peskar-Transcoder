@@ -39,7 +39,7 @@ fi
 
 source_file=`ls -1 $source_path$date_time`
 end_file=`ls -1 $source_path$date_time | awk -F. '{print $1}'`
-mkdir $end_path$date_time$end_file
+mkdir $end_path$date_time/$end_file
 
 sleep 1
 ps_status=`ps -e | grep ffmpeg | wc -l`
