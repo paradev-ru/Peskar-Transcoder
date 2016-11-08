@@ -25,7 +25,7 @@ else
 fi
 
 next_file=`ls -t -r -1 $queue_path | sed -n -e 1p`
-date_time=`date +%H%M%S%`
+date_time=`date +%H%M%S`
 mkdir $source_path$date_time
 mkdir $end_path$date_time
 
