@@ -9,8 +9,10 @@ paradev_path=/home/user/films/
 
 tmp_video_size1=`du -s $queue_path | awk '{print $1}'`
 sleep 10
-
+ps_status=`ps -e | grep ffmpeg | wc -l`
 if [ "$tmp_video_size1" -lt 1000 ]; then
+  exit 0
+elif [ "$ps_status" -gt "0" ]; then
   exit 0
 else
   while true; do
