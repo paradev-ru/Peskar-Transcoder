@@ -25,7 +25,7 @@ else
 fi
 
 next_file=`ls -t -r -1 $queue_path | sed -n -e 1p`
-date_time=`date +%H:%M:%S_%d-%m-%Y`
+date_time=`date +%H%M%S%`
 mkdir $source_path$date_time
 mkdir $end_path$date_time
 
@@ -50,7 +50,7 @@ done
 
 ffmpeg \
       -i $source_path$date_time/$source_file -map 0 -c:v libx264 -preset veryfast -g 25 -keyint_min 4\
-      -c:a aac -f mp4 $end_path$date_time/$end_file/$end_file.mp4 > $log_dir$end_file.log 2>&1 &
+      -c:a aac -f mp4 $end_path$date_time/$end_file.mp4 > $log_dir$end_file.log 2>&1 &
 
 sleep 1
 ps_status=`ps -e | grep ffmpeg | wc -l`
@@ -60,7 +60,7 @@ while [ "$ps_status" -gt "0" ]; do
 done
 
 ffmpeg \
-      -i $end_path$date_time/$end_file/$end_file.mp4 -map 0 -c copy -segment_time 3 \
+      -i $end_path$date_time/$end_file.mp4 -map 0 -c copy -segment_time 3 \
       -segment_list $end_path$date_time/$end_file/$end_file.m3u8 -f segment \
       $end_path$date_time/$end_file/$end_file\_%08d.ts > $log_dir$end_file\_seg.log 2>&1 &
 
