@@ -1,9 +1,11 @@
 #!/bin/bash
 
-queue_path=/home/torrent/queue-video-tmp/
-source_path=/home/torrent/source-video-tmp/
-end_path=/home/torrent/end-video-tmp/
-log_dir=/home/torrent/logs/
+user=emedvedev
+
+queue_path=/home/$user/queue/
+source_path=/home/$user/source/
+end_path=/home/$user/end/
+log_dir=/home/$user/logs/
 
 paradev_path=/home/user/films/
 
@@ -52,7 +54,7 @@ done
 
 ffmpeg \
       -i $source_path$date_time/$source_file -map 0 -c:v libx264 -preset veryfast -g 25 -keyint_min 4\
-      -c:a aac -f mp4 $end_path$date_time/$end_file.mp4 > $log_dir$end_file.log 2>&1 &
+      -c:a aac -c:s srt -f mp4 $end_path$date_time/$end_file.mp4 > $log_dir$end_file.log 2>&1 &
 
 sleep 1
 ps_status=`ps -e | grep ffmpeg | wc -l`
