@@ -97,13 +97,12 @@ while true;do
   ffmpeg \
         -i $source_path$job_id/$end_name.mp4 -map 0 -c copy -segment_time 3 \
         -segment_list $end_path$job_id/$end_name.m3u8 -f segment \
-        $end_path$job_id/$end_name\_%08d.ts > $log_path$job_id/$end_name\_seg.log 2>&1 &
+        $end_path$job_id/$end_name\_%08d.ts > $log_path$job_id/$end_name\_seg.log 2>&1 & pid_ffmpeg=$!
 
   wait $pid_ffmpeg
 
-  cp $log_path$job_id/$end_name.log $end_path$job_id/
-  cp $log_path$job_id/$end_name\_seg.log $end_path$job_id/
-
+  tar -z -c -f $end_path$job_id/logs_$end_name.tar.gz $log_path$job_id/* > /dev/null 2>&1
+  cp $end_path$job_id/logs_$end_name.tar.gz $end_path$job_id/
   tar -c -f $end_path$job_id/$end_name.tar $end_path$job_id/$end_name/* > /dev/null 2>&1
 
   date_time_up
@@ -113,7 +112,7 @@ while true;do
 
   date_time_up
   curl -X PUT -d '{"state": "working", "log": "'$date_time' Copying finished."}' $api_url/job/$job_id/ > /dev/null 2>&1
-  curl -X PUT -d '{"state": "working", "log": "'$date_time' Copying finished."}' $api_url/job/$job_id/ > /dev/null 2>&1
+  curl -X PUT -d '{"state": "finished", "log": "'$date_time'"}' $api_url/job/$job_id/ > /dev/null 2>&1
 
   rm -r -f queue_path$job_id && rm -r -f $source_path$job_id && rm -r -f $end_path$job_id > /dev/null 2>&1
   break
