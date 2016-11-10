@@ -43,7 +43,7 @@ while true;do
 
   if [ $job_download_url == "null" ]; then
     date_time_up
-    curl -X PUT -d '{"state": "canceled", "log": "'$date_time' download_url not found"}' $api_url/job/$job_id/ > /dev/null 2>&1
+    curl -X PUT -d '{"state": "failed", "log": "'$date_time' download_url not found"}' $api_url/job/$job_id/ > /dev/null 2>&1
     exit 0
   fi
 
