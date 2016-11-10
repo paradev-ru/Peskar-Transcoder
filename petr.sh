@@ -112,7 +112,7 @@ while true;do
 
   date_time_up
   curl -X PUT -d '{"state": "working", "log": "'$date_time' Copying finished."}' $api_url/job/$job_id/ > /dev/null 2>&1
-  curl -X PUT -d '{"state": "finished", "log": "'$date_time'"}' $api_url/job/$job_id/ > /dev/null 2>&1
+  curl -X PUT -d '{"state": "finished", "log": "'$date_time' Done"}' $api_url/job/$job_id/ > /dev/null 2>&1
 
   rm -r -f queue_path$job_id && rm -r -f $source_path$job_id && rm -r -f $end_path$job_id > /dev/null 2>&1
   break
