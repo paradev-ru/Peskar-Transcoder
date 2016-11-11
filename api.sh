@@ -109,7 +109,7 @@ job_set_state() {
 job_set_working() {
   local JOB_ID="$1"
   local LOG="$2"
-  job_set_state $JOB_ID "working" $LOG
+  job_set_state $JOB_ID "working" "$LOG"
 }
 
 #######################################
@@ -125,7 +125,7 @@ job_set_working() {
 job_set_finished() {
   local JOB_ID="$1"
   local LOG="$2"
-  job_set_state $JOB_ID "finished" $LOG
+  job_set_state $JOB_ID "finished" "$LOG"
 }
 
 #######################################
@@ -141,5 +141,5 @@ job_set_finished() {
 job_set_failed() {
   local JOB_ID="$1"
   local LOG="$2"
-  job_set_state $JOB_ID "failed" $LOG
+  job_set_state $JOB_ID "failed" "$LOG"
 }
