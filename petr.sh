@@ -57,7 +57,7 @@ while true; do
   sleep 1
   ps_status=$(ps -e | grep ffmpeg | wc -l)
   while [ "$ps_status" -gt "0" ]; do
-    job_log $job_id "FFmpeg is rinning, sleeping..."
+    job_log $job_id "FFmpeg is running, sleeping..."
     sleep 30
     ps_status=$(ps -e | grep ffmpeg | wc -l)
   done
