@@ -2,6 +2,9 @@
 #
 # Perform setting vars
 
+# Transcoder options
+PESKAR_PETR_USER=${PESKAR_PETR_USER:-"emedvedev"}
+
 # Rsync options
 PESKAR_STORE_USER=${PESKAR_STORE_USER:-"user"}
 PESKAR_STORE_HOST=${PESKAR_STORE_HOST:-"paradev.ru"}

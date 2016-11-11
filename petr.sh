@@ -3,13 +3,12 @@
 source "env.sh"
 source "api.sh"
 
-user=emedvedev
-
-queue_path=/home/$user/queue/
-source_path=/home/$user/source/
-end_path=/home/$user/end/
-finish_path=/home/$user/finish/
-log_path=/home/$user/logs/
+base_path=/home/$PESKAR_PETR_USER
+queue_path=$base_path/queue/
+source_path=$base_path/source/
+end_path=$base_path/end/
+finish_path=$base_path/finish/
+log_path=$base_path/logs/
 
 state_failed=0
 
