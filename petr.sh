@@ -37,7 +37,7 @@ while true; do
     exit 0
   fi
 
-  file_name=`echo $job_download_url | awk -F/ '{print $NF}'`
+  file_name=$(echo $job_download_url | awk -F/ '{print $NF}')
   mkdir $queue_path$job_id
 
   job_log $job_id "Starting download..."
@@ -45,7 +45,7 @@ while true; do
   wait $pid_curl
   job_log $job_id "Successfully downloaded"
 
-  end_name=`echo $file_name | awk -F. '{print $1}'`
+  end_name=$(echo $file_name | awk -F. '{print $1}')
 
   mkdir -p $source_path$job_id/
   mkdir -p $end_path$job_id/
@@ -53,11 +53,11 @@ while true; do
 
   job_log $job_id "Ensure FFmpeg is not running"
   sleep 1
-  ps_status=`ps -e | grep ffmpeg | wc -l`
+  ps_status=$(ps -e | grep ffmpeg | wc -l)
   while [ "$ps_status" -gt "0" ]; do
     job_log $job_id "FFmpeg is rinning, sleeping..."
     sleep 10
-    ps_status=`ps -e | grep ffmpeg | wc -l`
+    ps_status=$(ps -e | grep ffmpeg | wc -l)
   done
   job_log $job_id "FFmpeg is available"
 
@@ -67,7 +67,7 @@ while true; do
         -c:a aac -f mp4 $source_path$job_id/$end_name.mp4 > $log_path$job_id/$end_name.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
 
-  file_size=`wc -c $source_path$job_id/$end_name.mp4 | awk '{print $1}'`
+  file_size=$(wc -c $source_path$job_id/$end_name.mp4 | awk '{print $1}')
   if [ $file_size -lt 1 ]; then
     job_set_failed $job_id "Transcoding error"
 
