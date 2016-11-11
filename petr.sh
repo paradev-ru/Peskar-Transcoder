@@ -12,7 +12,6 @@ log_path=/home/$user/logs/
 
 paradev_path=/home/user/films/
 state_failed=0
-to_null="> /dev/null 2>&1"
 
 while true; do
   job_id=$(job_ping)
@@ -73,9 +72,9 @@ while true; do
   if [ $file_size -lt 1 ]; then
     job_set_failed $job_id "Transcoding error"
 
-    tar -c -f $end_path$job_id/$end_name.tar $log_path$job_id/$end_name.log $to_null
+    tar -c -f $end_path$job_id/$end_name.tar $log_path$job_id/$end_name.log > /dev/null 2>&1
     rsync -e='ssh -p 3389' -r $end_path$job_id/$end_name.tar user@paradev.ru:$paradev_path
-    rm -r -f queue_path$job_id && rm -r -f $source_path$job_id && rm -r -f $end_path$job_id $to_null
+    rm -r -f queue_path$job_id && rm -r -f $source_path$job_id && rm -r -f $end_path$job_id > /dev/null 2>&1
 
     exit 0
   fi
@@ -90,16 +89,15 @@ while true; do
   job_log $job_id "Segmenting finished"
 
   job_log $job_id "Creating tarball..."
-  tar -z -c -f $end_path$job_id/logs_$end_name.tar.gz $log_path$job_id/* $to_null
-  cp $end_path$job_id/logs_$end_name.tar.gz $end_path$job_id/
-  tar -c -f $end_path$job_id/$end_name.tar $end_path$job_id/$end_name/* $to_null
+  tar -z -c -f $end_path$job_id/logs_$end_name.tar.gz $log_path$job_id/* > /dev/null 2>&1
+  tar -c -f $end_path$job_id/$end_name.tar $end_path$job_id/$end_name/* > /dev/null 2>&1
   job_log $job_id "Creating finished"
 
   job_log $job_id "Starting copying to remote server..."
   rsync -e='ssh -p 3389' -r $end_path$job_id/$end_name.tar user@paradev.ru:$paradev_path
   job_log $job_id "Copying finished"
 
-  rm -r -f queue_path$job_id && rm -r -f $source_path$job_id && rm -r -f $end_path$job_id $to_null
+  rm -r -f queue_path$job_id && rm -r -f $source_path$job_id && rm -r -f $end_path$job_id > /dev/null 2>&1
 
   job_set_finished $job_id "Done"
   break
