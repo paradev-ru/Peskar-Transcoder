@@ -124,4 +124,4 @@ main() {
   done
 }
 
-main_test "$@"
+main "$@"
