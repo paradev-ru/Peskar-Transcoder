@@ -3,7 +3,7 @@
 # Perform setting vars
 
 # Transcoder options
-PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"/home/emedvedev/peskar-transcoder"}
+PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"/opt/peskar/peskar-transcoder"}
 
 # Rsync options
 PESKAR_SYNC_TARGET=${PESKAR_SYNC_TARGET:-"user@paradev.ru"}
