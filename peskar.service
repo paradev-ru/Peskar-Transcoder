@@ -1,0 +1,15 @@
+[Unit]
+Description=Peskar Transcoder
+Documentation=https://github.com/paradev-ru/peskar-transcoder
+After=network.target
+
+[Service]
+User=peskar
+Group=peskar
+
+Restart=always
+
+ExecStart=/opt/peskar/peskar-transcoder/petr.sh
+
+[Install]
+WantedBy=multi-user.target
