@@ -85,7 +85,7 @@ worker() {
   ffmpeg \
     -i $source_path/$JOB_ID/$end_name.mp4 -map 0 -c copy -segment_time 3 \
     -segment_list $end_path/$JOB_ID/$end_name.m3u8 -f segment \
-    $end_path/$JOB_ID/$end_name_%08d.ts > $log_path/$JOB_ID/$end_name_seg.log 2>&1 & pid_ffmpeg=$!
+    $end_path/$JOB_ID/$end_name\_%08d.ts > $log_path/$JOB_ID/$end_name\_seg.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
   job_log $JOB_ID "Segmenting finished"
 
