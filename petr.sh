@@ -90,15 +90,15 @@ while true; do
 
   job_log $job_id "Creating tarball..."
   tar -z -c -f $end_path$job_id/logs_$end_name.tar.gz $log_path$job_id/* > /dev/null 2>&1
-  tar -c -f $end_path$job_id/$end_name.tar $end_path$job_id/$end_name/* > /dev/null 2>&1
+  tar -c -f $end_path$$end_name.tar $end_path$job_id/$end_name/* > /dev/null 2>&1
   job_log $job_id "Creating finished"
 
   job_log $job_id "Starting copying to remote server..."
-  rsync -e='ssh -p 3389' -r $end_path$job_id/$end_name.tar user@paradev.ru:$paradev_path
+  rsync -e='ssh -p 3389' -r $end_path$$end_name.tar user@paradev.ru:$paradev_path
   job_log $job_id "Copying finished"
 
   rm -r -f queue_path$job_id && rm -r -f $source_path$job_id && rm -r -f $end_path$job_id > /dev/null 2>&1
-
+  rm -f $end_path$$end_name.tar
   job_set_finished $job_id "Done"
   break
 done
