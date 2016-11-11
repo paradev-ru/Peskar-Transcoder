@@ -87,6 +87,8 @@ job_set_state() {
   fi
   if [[ -z "$LOG" ]]; then
     LOG="$DATE: Set state $STATE"
+  else
+    LOG="$DATE: $LOG"
   fi
   curl \
     -X PUT \
