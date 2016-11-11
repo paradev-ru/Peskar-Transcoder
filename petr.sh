@@ -11,7 +11,6 @@ end_path=/home/$user/end/
 finish_path=/home/$user/finish/
 log_path=/home/$user/logs/
 
-paradev_path=/home/user/films/
 state_failed=0
 
 while true; do
@@ -75,7 +74,7 @@ while true; do
     job_set_failed $job_id "Transcoding error"
 
     tar -c -f $end_path$job_id/$end_name.tar $log_path$job_id/$end_name.log > /dev/null 2>&1
-    rsync -e='ssh -p 3389' -r $end_path$job_id/$end_name.tar user@paradev.ru:$paradev_path
+    rsync -e='ssh -p 3389' -r $end_path$job_id/$end_name.tar $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
     rm -r -f queue_path$job_id && rm -r -f $source_path$job_id && rm -r -f $end_path$job_id > /dev/null 2>&1
 
     exit 0
@@ -94,9 +93,10 @@ while true; do
   tar -z -c -f $end_path$job_id/logs_$end_name.tar.gz $log_path$job_id/* > /dev/null 2>&1
   tar -c -f $finish_path$job_id/$end_name.tar $end_path$job_id/* > /dev/null 2>&1
   job_log $job_id "Creating finished"
-# exit 0
+  # exit 0
+
   job_log $job_id "Starting copying to remote server..."
-  rsync -e='ssh -p 3389' -r $finish_path$job_id/$end_name.tar user@paradev.ru:$paradev_path
+  rsync -e='ssh -p 3389' -r $finish_path$job_id/$end_name.tar $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
   job_log $job_id "Copying finished"
 
   rm -r -f $queue_path$job_id > /dev/null 2>&1
