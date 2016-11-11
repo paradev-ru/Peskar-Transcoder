@@ -97,7 +97,7 @@ job_set_state() {
 #######################################
 # Set job state to "working"
 # Globals:
-#   PESKAR_API_URL
+#   None
 # Arguments:
 #   Job ID
 #   Log message (optional)
@@ -105,13 +105,13 @@ job_set_state() {
 #   None
 #######################################
 job_set_working() {
-  job_state $1 "working" $2
+  job_set_state $1 "working" $2
 }
 
 #######################################
 # Set job state to "finished"
 # Globals:
-#   PESKAR_API_URL
+#   None
 # Arguments:
 #   Job ID
 #   Log message (optional)
@@ -119,13 +119,13 @@ job_set_working() {
 #   None
 #######################################
 job_set_finished() {
-  job_state $1 "finished" $2
+  job_set_state $1 "finished" $2
 }
 
 #######################################
 # Set job state to "failed"
 # Globals:
-#   PESKAR_API_URL
+#   None
 # Arguments:
 #   Job ID
 #   Log message (optional)
@@ -133,5 +133,5 @@ job_set_finished() {
 #   None
 #######################################
 job_set_failed() {
-  job_state $1 "failed" $2
+  job_set_state $1 "failed" $2
 }
