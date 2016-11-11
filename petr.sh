@@ -5,21 +5,31 @@
 source "env.sh"
 source "api.sh"
 
-base_path=/home/$PESKAR_PETR_USER
-queue_path/=$base_path/queue/
-source_path=$base_path/source/
-end_path=$base_path/end/
-finish_path=$base_path/finish/
-log_path=$base_path/logs/
-
+#######################################
+# Peskar transcored worker
+# Globals:
+#   PESKAR_PETR_USER
+#   PESKAR_SYNC_TARGET
+#   PESKAR_SYNC_PATH
+#   PESKAR_SYNC_OPTIONS
+# Arguments:
+#   Job ID
+# Returns:
+#   None
+#######################################
 worker() {
   local JOB_ID="$1"
 
-  local QUEUE_PATH="$queue_path/$JOB_ID"
-  local SOURCE_PATH="$source_path/$JOB_ID"
-  local END_PATH="$end_path/$JOB_ID"
-  local FINISH_PATH="$finish_path/$JOB_ID"
-  local LOG_PATH="$log_path/$JOB_ID"
+  local BASE_PATH="/home/$PESKAR_PETR_USER"
+  local QUEUE_PATH="$BASE_PATH/queue/$JOB_ID"
+  local SOURCE_PATH="$BASE_PATH/source/$JOB_ID"
+  local END_PATH="$BASE_PATH/end/$JOB_ID"
+  local FINISH_PATH="$BASE_PATH/finish/$JOB_ID"
+  local LOG_PATH="$BASE_PATH/logs/$JOB_ID"
+
+  if [[ -z "$JOB_ID" ]]; then
+    return
+  fi
 
   job_set_working $JOB_ID "Add to working..."
   job_download_url=$(job_get_url $JOB_ID)
@@ -92,6 +102,15 @@ worker() {
   job_set_finished $JOB_ID "Done"
 }
 
+#######################################
+# Entrypoint
+# Globals:
+#   None
+# Arguments:
+#   $@
+# Returns:
+#   None
+#######################################
 main() {
   while true; do
     job_id=$(job_ping)
