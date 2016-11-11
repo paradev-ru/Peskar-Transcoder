@@ -64,8 +64,8 @@ while true; do
 
   job_log $job_id "Starting transcoding..."
   ffmpeg \
-        -i $queue_path$job_id/$file_name -c:v libx264 -preset veryfast -g 25 -keyint_min 4\
-        -c:a aac -f mp4 $source_path$job_id/$end_name.mp4 > $log_path$job_id/$end_name.log 2>&1 & pid_ffmpeg=$!
+    -i $queue_path$job_id/$file_name -c:v libx264 -preset veryfast -g 25 -keyint_min 4\
+    -c:a aac -f mp4 $source_path$job_id/$end_name.mp4 > $log_path$job_id/$end_name.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
 
   file_size=$(wc -c $source_path$job_id/$end_name.mp4 | awk '{print $1}')
@@ -73,7 +73,10 @@ while true; do
     job_set_failed $job_id "Transcoding error"
 
     tar -c -f $end_path$job_id/$end_name.tar $log_path$job_id/$end_name.log > /dev/null 2>&1
-    rsync -e='ssh -p 3389' -r $end_path$job_id/$end_name.tar $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
+    rsync \
+      -e="ssh -p $PESKAR_STORE_PORT" \
+      -r $end_path$job_id/$end_name.tar \
+      $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
     rm -r -f queue_path$job_id && rm -r -f $source_path$job_id && rm -r -f $end_path$job_id > /dev/null 2>&1
 
     exit 0
@@ -82,9 +85,9 @@ while true; do
 
   job_log $job_id "Starting segmenting..."
   ffmpeg \
-        -i $source_path$job_id/$end_name.mp4 -map 0 -c copy -segment_time 3 \
-        -segment_list $end_path$job_id/$end_name.m3u8 -f segment \
-        $end_path$job_id/$end_name\_%08d.ts > $log_path$job_id/$end_name\_seg.log 2>&1 & pid_ffmpeg=$!
+    -i $source_path$job_id/$end_name.mp4 -map 0 -c copy -segment_time 3 \
+    -segment_list $end_path$job_id/$end_name.m3u8 -f segment \
+    $end_path$job_id/$end_name\_%08d.ts > $log_path$job_id/$end_name\_seg.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
   job_log $job_id "Segmenting finished"
 
@@ -92,10 +95,12 @@ while true; do
   tar -z -c -f $end_path$job_id/logs_$end_name.tar.gz $log_path$job_id/* > /dev/null 2>&1
   tar -c -f $finish_path$job_id/$end_name.tar $end_path$job_id/* > /dev/null 2>&1
   job_log $job_id "Creating finished"
-  # exit 0
 
   job_log $job_id "Starting copying to remote server..."
-  rsync -e='ssh -p 3389' -r $finish_path$job_id/$end_name.tar $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
+  rsync \
+    -e="ssh -p $PESKAR_STORE_PORT" \
+    -r $finish_path$job_id/$end_name.tar \
+    $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
   job_log $job_id "Copying finished"
 
   rm -r -f $queue_path$job_id > /dev/null 2>&1
