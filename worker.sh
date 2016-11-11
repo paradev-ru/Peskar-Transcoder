@@ -40,7 +40,7 @@ worker() {
   end_name=$(echo $file_name | awk -F. '{print $1}')
 
   job_log $JOB_ID "Starting downloading..."
-  curl_exec -so $QUEUE_PATH/$file_name $job_download_url & pid_curl=$!
+  curl -so $QUEUE_PATH/$file_name $job_download_url & pid_curl=$!
   wait $pid_curl
   job_log $JOB_ID "Downloading finished"
 
@@ -54,7 +54,7 @@ worker() {
   job_log $JOB_ID "FFmpeg is available"
 
   job_log $JOB_ID "Starting transcoding..."
-  ffmpeg_exec \
+  ffmpeg \
     -i $QUEUE_PATH/$file_name -c:v libx264 -preset veryfast \
     -g 25 -keyint_min 4 -c:a aac -f mp4 \
     $SOURCE_PATH/$end_name.mp4 > $LOG_PATH/$end_name.log 2>&1 & pid_ffmpeg=$!
@@ -63,7 +63,7 @@ worker() {
   if [ $file_size -lt 1 ]; then
     job_set_failed $JOB_ID "Transcoding error"
     tar -zcf $END_PATH/logs_$end_name.tar.gz $LOG_PATH/* > /dev/null 2>&1
-    rsync_exec \
+    rsync \
       -e "$PESKAR_SYNC_OPTIONS" \
       -r $END_PATH/logs_$end_name.tar.gz \
       $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH
@@ -73,7 +73,7 @@ worker() {
   job_log $JOB_ID "Transcoding finished"
 
   job_log $JOB_ID "Starting segmenting..."
-  ffmpeg_exec \
+  ffmpeg \
     -i $SOURCE_PATH/$end_name.mp4 -map 0 -c copy -segment_time 3 \
     -segment_list $END_PATH/$end_name.m3u8 -f segment \
     $END_PATH/$end_name\_%08d.ts > $LOG_PATH/$end_name\_seg.log 2>&1 & pid_ffmpeg=$!
@@ -86,7 +86,7 @@ worker() {
   job_log $JOB_ID "Creating finished"
 
   job_log $JOB_ID "Starting copying to remote server..."
-  rsync_exec \
+  rsync \
     -e "$PESKAR_SYNC_OPTIONS" \
     -r $FINISH_PATH/$end_name.tar \
     $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH
