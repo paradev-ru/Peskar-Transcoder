@@ -8,7 +8,7 @@ source "api.sh"
 #######################################
 # Peskar transcored worker
 # Globals:
-#   PESKAR_PETR_USER
+#   PESKAR_PETR_HOME_PATH
 #   PESKAR_SYNC_TARGET
 #   PESKAR_SYNC_PATH
 #   PESKAR_SYNC_OPTIONS
@@ -20,12 +20,11 @@ source "api.sh"
 worker() {
   local JOB_ID="$1"
 
-  local BASE_PATH="/home/$PESKAR_PETR_USER"
-  local QUEUE_PATH="$BASE_PATH/queue/$JOB_ID"
-  local SOURCE_PATH="$BASE_PATH/source/$JOB_ID"
-  local END_PATH="$BASE_PATH/end/$JOB_ID"
-  local FINISH_PATH="$BASE_PATH/finish/$JOB_ID"
-  local LOG_PATH="$BASE_PATH/logs/$JOB_ID"
+  local QUEUE_PATH="$PESKAR_PETR_HOME_PATH/$JOB_ID/queue"
+  local SOURCE_PATH="$PESKAR_PETR_HOME_PATH/$JOB_ID/source"
+  local END_PATH="$PESKAR_PETR_HOME_PATH/$JOB_ID/end"
+  local FINISH_PATH="$PESKAR_PETR_HOME_PATH/$JOB_ID/finish"
+  local LOG_PATH="$PESKAR_PETR_HOME_PATH/$JOB_ID/logs"
 
   if [[ -z "$JOB_ID" ]]; then
     return
@@ -72,7 +71,7 @@ worker() {
       -e "\"$PESKAR_SYNC_OPTIONS\"" \
       -r $END_PATH/logs_$end_name.tar.gz \
       $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH
-    rm -rf $QUEUE_PATH $SOURCE_PATH $END_PATH $FINISH_PATH $LOG_PATH
+    rm -rf $PESKAR_PETR_HOME_PATH/$JOB_ID
     return
   fi
   job_log $JOB_ID "Transcoding finished"
@@ -97,7 +96,7 @@ worker() {
     $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH
   job_log $JOB_ID "Copying finished"
 
-  rm -rf $QUEUE_PATH $SOURCE_PATH $END_PATH $FINISH_PATH $LOG_PATH
+  rm -rf $PESKAR_PETR_HOME_PATH/$JOB_ID
 
   job_set_finished $JOB_ID "Done"
 }
@@ -105,13 +104,17 @@ worker() {
 #######################################
 # Entrypoint
 # Globals:
-#   None
+#   PESKAR_PETR_HOME_PATH
 # Arguments:
 #   $@
 # Returns:
 #   None
 #######################################
 main() {
+  if [ ! -d "$PESKAR_PETR_HOME_PATH" ]; then
+    echo "Directory '$PESKAR_PETR_HOME_PATH' doesn't exist."
+    exit 1
+  fi
   while true; do
     job_id=$(job_ping)
     if [ $job_id == "null" ]; then
