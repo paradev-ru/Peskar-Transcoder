@@ -69,7 +69,7 @@ while true; do
 
   file_size=`wc -c $source_path$job_id/$end_name.mp4 | awk '{print $1}'`
   if [ $file_size -lt 1 ]; then
-    job_set_failed "Transcoding error"
+    job_set_failed $job_id "Transcoding error"
 
     tar -c -f $end_path$job_id/$end_name.tar $log_path$job_id/$end_name.log > /dev/null 2>&1
     rsync -e='ssh -p 3389' -r $end_path$job_id/$end_name.tar user@paradev.ru:$paradev_path
@@ -78,7 +78,7 @@ while true; do
     exit 0
   fi
 
-  job_log "Transcoding finished, sending to copying.."
+  job_log $job_id "Transcoding finished, sending to copying.."
 
   ffmpeg \
         -i $source_path$job_id/$end_name.mp4 -map 0 -c copy -segment_time 3 \
@@ -91,12 +91,12 @@ while true; do
   cp $end_path$job_id/logs_$end_name.tar.gz $end_path$job_id/
   tar -c -f $end_path$job_id/$end_name.tar $end_path$job_id/$end_name/* > /dev/null 2>&1
 
-  job_log "Starting copying..."
+  job_log $job_id "Starting copying..."
 
   rsync -e='ssh -p 3389' -r $end_path$job_id/$end_name.tar user@paradev.ru:$paradev_path
 
-  job_log "Copying finished"
-  job_set_finished "Done"
+  job_log $job_id "Copying finished"
+  job_set_finished $job_id "Done"
 
   rm -r -f queue_path$job_id && rm -r -f $source_path$job_id && rm -r -f $end_path$job_id > /dev/null 2>&1
   break
