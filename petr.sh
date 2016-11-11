@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source "functions.sh"
+source "env.sh"
+source "api.sh"
 
 user=emedvedev
 

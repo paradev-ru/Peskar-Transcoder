@@ -2,8 +2,6 @@
 #
 # Perform Peskar API server calls
 
-PESKAR_API_URL=${PESKAR_API_URL:-"http://api.peskar.paradev.ru"}
-
 #######################################
 # Ping server
 # Globals:
