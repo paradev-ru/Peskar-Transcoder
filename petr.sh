@@ -43,8 +43,9 @@ while true; do
   job_log $job_id "Starting download..."
   curl -s -o $queue_path$job_id/$file_name $job_download_url & pid_curl=$!
   wait $pid_curl
+  job_log $job_id "Successfully downloaded"
 
-  job_log $job_id "Downloaded, sending to transcoder..."
+  job_log $job_id "Sending to transcoder..."
 
   end_name=`echo $file_name | awk -F. '{print $1}'`
 
@@ -75,13 +76,15 @@ while true; do
 
     exit 0
   fi
+  job_log $job_id "Transcoding finished"
 
-  job_log $job_id "Transcoding finished, sending to copying.."
+  job_log $job_id "Starting segmenting..."
   ffmpeg \
         -i $source_path$job_id/$end_name.mp4 -map 0 -c copy -segment_time 3 \
         -segment_list $end_path$job_id/$end_name.m3u8 -f segment \
         $end_path$job_id/$end_name\_%08d.ts > $log_path$job_id/$end_name\_seg.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
+  job_log $job_id "Segmenting finished"
 
   tar -z -c -f $end_path$job_id/logs_$end_name.tar.gz $log_path$job_id/* > /dev/null 2>&1
   cp $end_path$job_id/logs_$end_name.tar.gz $end_path$job_id/
