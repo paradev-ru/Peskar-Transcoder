@@ -62,7 +62,6 @@ worker() {
     -g 25 -keyint_min 4 -c:a aac -f mp4 \
     $SOURCE_PATH/$end_name.mp4 > $LOG_PATH/$end_name.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
-
   file_size=$(wc -c $SOURCE_PATH/$end_name.mp4 | awk '{print $1}')
   if [ $file_size -lt 1 ]; then
     job_set_failed $JOB_ID "Transcoding error"
