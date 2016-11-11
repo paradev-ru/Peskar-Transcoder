@@ -45,20 +45,21 @@ while true; do
   wait $pid_curl
   job_log $job_id "Successfully downloaded"
 
-  job_log $job_id "Sending to transcoder..."
-
   end_name=`echo $file_name | awk -F. '{print $1}'`
 
   mkdir -p $source_path$job_id/
   mkdir -p $end_path$job_id/
   mkdir -p $log_path$job_id/
 
+  job_log $job_id "Ensure FFmpeg is not running"
   sleep 1
   ps_status=`ps -e | grep ffmpeg | wc -l`
   while [ "$ps_status" -gt "0" ]; do
+    job_log $job_id "FFmpeg is rinning, sleeping..."
     sleep 10
     ps_status=`ps -e | grep ffmpeg | wc -l`
   done
+  job_log $job_id "FFmpeg is available"
 
   job_log $job_id "Starting transcoding..."
   ffmpeg \
