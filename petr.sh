@@ -6,7 +6,7 @@ source "env.sh"
 source "api.sh"
 
 base_path=/home/$PESKAR_PETR_USER
-queue_path=$base_path/queue/
+queue_path/=$base_path/queue/
 source_path=$base_path/source/
 end_path=$base_path/end/
 finish_path=$base_path/finish/
@@ -15,21 +15,21 @@ log_path=$base_path/logs/
 pre_work_hook() {
   local JOB_ID="$1"
 
-  mkdir -p $queue_path$JOB_ID/
-  mkdir -p $source_path$JOB_ID/
-  mkdir -p $end_path$JOB_ID/
-  mkdir -p $finish_path$JOB_ID/
-  mkdir -p $log_path$JOB_ID/
+  mkdir -p $queue_path/$JOB_ID/
+  mkdir -p $source_path/$JOB_ID/
+  mkdir -p $end_path/$JOB_ID/
+  mkdir -p $finish_path/$JOB_ID/
+  mkdir -p $log_path/$JOB_ID/
 }
 
 post_work_hook() {
   local JOB_ID="$1"
 
-  rm -rf $queue_path$JOB_ID > /dev/null 2>&1
-  rm -rf $source_path$JOB_ID > /dev/null 2>&1
-  rm -rf $end_path$JOB_ID > /dev/null 2>&1
-  rm -rf $finish_path$JOB_ID > /dev/null 2>&1
-  rm -rf $log_path$JOB_ID > /dev/null 2>&1
+  rm -rf $queue_path/$JOB_ID/ > /dev/null 2>&1
+  rm -rf $source_path/$JOB_ID/ > /dev/null 2>&1
+  rm -rf $end_path/$JOB_ID/ > /dev/null 2>&1
+  rm -rf $finish_path/$JOB_ID/ > /dev/null 2>&1
+  rm -rf $log_path/$JOB_ID/ > /dev/null 2>&1
 }
 
 worker() {
@@ -50,7 +50,7 @@ worker() {
   pre_work_hook $JOB_ID
 
   job_log $JOB_ID "Starting downloading..."
-  curl -s -o $queue_path$JOB_ID/$file_name $job_download_url & pid_curl=$!
+  curl -s -o $queue_path/$JOB_ID/$file_name $job_download_url & pid_curl=$!
   wait $pid_curl
   job_log $JOB_ID "Downloading finished"
 
@@ -65,17 +65,17 @@ worker() {
 
   job_log $JOB_ID "Starting transcoding..."
   ffmpeg \
-    -i $queue_path$JOB_ID/$file_name -c:v libx264 -preset veryfast -g 25 -keyint_min 4\
-    -c:a aac -f mp4 $source_path$JOB_ID/$end_name.mp4 > $log_path$JOB_ID/$end_name.log 2>&1 & pid_ffmpeg=$!
+    -i $queue_path/$JOB_ID/$file_name -c:v libx264 -preset veryfast -g 25 -keyint_min 4\
+    -c:a aac -f mp4 $source_path/$JOB_ID/$end_name.mp4 > $log_path/$JOB_ID/$end_name.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
 
-  file_size=$(wc -c $source_path$JOB_ID/$end_name.mp4 | awk '{print $1}')
+  file_size=$(wc -c $source_path/$JOB_ID/$end_name.mp4 | awk '{print $1}')
   if [ $file_size -lt 1 ]; then
     job_set_failed $JOB_ID "Transcoding error"
-    tar -c -f $end_path$JOB_ID/$end_name.tar $log_path$JOB_ID/$end_name.log > /dev/null 2>&1
+    tar -c -f $end_path/$JOB_ID/$end_name.tar $log_path/$JOB_ID/$end_name.log > /dev/null 2>&1
     rsync \
       -e="ssh -p $PESKAR_STORE_PORT" \
-      -r $end_path$JOB_ID/$end_name.tar \
+      -r $end_path/$JOB_ID/$end_name.tar \
       $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
     post_work_hook $JOB_ID
     return
@@ -84,21 +84,21 @@ worker() {
 
   job_log $JOB_ID "Starting segmenting..."
   ffmpeg \
-    -i $source_path$JOB_ID/$end_name.mp4 -map 0 -c copy -segment_time 3 \
-    -segment_list $end_path$JOB_ID/$end_name.m3u8 -f segment \
-    $end_path$JOB_ID/$end_name\_%08d.ts > $log_path$JOB_ID/$end_name\_seg.log 2>&1 & pid_ffmpeg=$!
+    -i $source_path/$JOB_ID/$end_name.mp4 -map 0 -c copy -segment_time 3 \
+    -segment_list $end_path/$JOB_ID/$end_name.m3u8 -f segment \
+    $end_path/$JOB_ID/$end_name\_%08d.ts > $log_path/$JOB_ID/$end_name\_seg.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
   job_log $JOB_ID "Segmenting finished"
 
   job_log $JOB_ID "Creating tarball..."
-  tar -zcf $end_path$JOB_ID/logs_$end_name.tar.gz $log_path$JOB_ID/* > /dev/null 2>&1
-  tar -cf $finish_path$JOB_ID/$end_name.tar $end_path$JOB_ID/* > /dev/null 2>&1
+  tar -zcf $end_path/$JOB_ID/logs_$end_name.tar.gz $log_path/$JOB_ID/* > /dev/null 2>&1
+  tar -cf $finish_path/$JOB_ID/$end_name.tar $end_path/$JOB_ID/* > /dev/null 2>&1
   job_log $JOB_ID "Creating finished"
 
   job_log $JOB_ID "Starting copying to remote server..."
   rsync \
     -e="ssh -p $PESKAR_STORE_PORT" \
-    -r $finish_path$JOB_ID/$end_name.tar \
+    -r $finish_path/$JOB_ID/$end_name.tar \
     $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
   job_log $JOB_ID "Copying finished"
 
