@@ -1,13 +1,32 @@
 #!/bin/bash
+#
+# Perform Peskar API server calls
 
 PESKAR_API_URL=${PESKAR_API_URL:-"http://api.peskar.paradev.ru"}
 
-# job_ping
+#######################################
+# Ping server
+# Globals:
+#   PESKAR_API_URL
+# Arguments:
+#   None
+# Returns:
+#   Job ID
+#######################################
 job_ping() {
   echo $(curl -sX GET $PESKAR_API_URL/ping/ | jq '.id' | tr -d \")
 }
 
-# job_log JOB_ID "Log message"
+#######################################
+# Send log
+# Globals:
+#   PESKAR_API_URL
+# Arguments:
+#   Job ID
+#   Log message
+# Returns:
+#   None
+#######################################
 job_log() {
   local JOB_ID="$1"
   local LOG="$2"
@@ -21,20 +40,45 @@ job_log() {
     $PESKAR_API_URL/job/$JOB_ID/ > /dev/null 2>&1
 }
 
-# job_get_state JOB_ID
+#######################################
+# Get job state
+# Globals:
+#   PESKAR_API_URL
+# Arguments:
+#   Job ID
+# Returns:
+#   State
+#######################################
 job_get_state() {
   local JOB_ID="$1"
   echo $(curl -sX GET $PESKAR_API_URL/job/$JOB_ID/ | jq '.state' | tr -d \")
 }
 
-# job_get_url JOB_ID
+#######################################
+# Get job download url
+# Globals:
+#   PESKAR_API_URL
+# Arguments:
+#   Job ID
+# Returns:
+#   Download url
+#######################################
 job_get_url() {
   local JOB_ID="$1"
   echo $(curl -sX GET $PESKAR_API_URL/job/$JOB_ID/ | jq '.download_url' | tr -d \")
 }
 
-# job_set_state JOB_ID "working" "Log message"
-# job_set_state JOB_ID "working"
+#######################################
+# Set job state
+# Globals:
+#   PESKAR_API_URL
+# Arguments:
+#   Job ID
+#   State
+#   Log message (optional)
+# Returns:
+#   None
+#######################################
 job_set_state() {
   local JOB_ID="$1"
   local STATE="$2"
@@ -52,20 +96,44 @@ job_set_state() {
     $PESKAR_API_URL/job/$JOB_ID/ > /dev/null 2>&1
 }
 
-# job_set_working JOB_ID "Log message"
-# job_set_working JOB_ID
+#######################################
+# Set job state to "working"
+# Globals:
+#   PESKAR_API_URL
+# Arguments:
+#   Job ID
+#   Log message (optional)
+# Returns:
+#   None
+#######################################
 job_set_working() {
   job_state $1 "working" $2
 }
 
-# job_set_finished JOB_ID "Log message"
-# job_set_finished JOB_ID
+#######################################
+# Set job state to "finished"
+# Globals:
+#   PESKAR_API_URL
+# Arguments:
+#   Job ID
+#   Log message (optional)
+# Returns:
+#   None
+#######################################
 job_set_finished() {
   job_state $1 "finished" $2
 }
 
-# job_set_failed JOB_ID "Log message"
-# job_set_failed JOB_ID
+#######################################
+# Set job state to "failed"
+# Globals:
+#   PESKAR_API_URL
+# Arguments:
+#   Job ID
+#   Log message (optional)
+# Returns:
+#   None
+#######################################
 job_set_failed() {
   job_state $1 "failed" $2
 }
