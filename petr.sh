@@ -67,7 +67,7 @@ worker() {
     job_set_failed $JOB_ID "Transcoding error"
     tar -zcf $END_PATH/logs_$end_name.tar.gz $LOG_PATH/* > /dev/null 2>&1
     rsync \
-      -e "\"$PESKAR_SYNC_OPTIONS\"" \
+      -e "$PESKAR_SYNC_OPTIONS" \
       -r $END_PATH/logs_$end_name.tar.gz \
       $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH
     rm -rf $PESKAR_PETR_HOME_PATH/$JOB_ID
@@ -90,7 +90,7 @@ worker() {
 
   job_log $JOB_ID "Starting copying to remote server..."
   rsync \
-    -e "\"$PESKAR_SYNC_OPTIONS\"" \
+    -e "$PESKAR_SYNC_OPTIONS" \
     -r $FINISH_PATH/$end_name.tar \
     $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH
   job_log $JOB_ID "Copying finished"
