@@ -15,39 +15,38 @@ log_path=$base_path/logs/
 pre_work_hook() {
   local JOB_ID="$1"
 
-  mkdir -p $queue_path/$JOB_ID/
-  mkdir -p $source_path/$JOB_ID/
-  mkdir -p $end_path/$JOB_ID/
-  mkdir -p $finish_path/$JOB_ID/
-  mkdir -p $log_path/$JOB_ID/
+  mkdir -p $queue_path/$JOB_ID \
+    $source_path/$JOB_ID \
+    $end_path/$JOB_ID \
+    $finish_path/$JOB_ID \
+    $log_path/$JOB_ID \
 }
 
 post_work_hook() {
   local JOB_ID="$1"
 
-  rm -rf $queue_path/$JOB_ID/ > /dev/null 2>&1
-  rm -rf $source_path/$JOB_ID/ > /dev/null 2>&1
-  rm -rf $end_path/$JOB_ID/ > /dev/null 2>&1
-  rm -rf $finish_path/$JOB_ID/ > /dev/null 2>&1
-  rm -rf $log_path/$JOB_ID/ > /dev/null 2>&1
+  rm -rf $queue_path/$JOB_ID \
+    $source_path/$JOB_ID \
+    $end_path/$JOB_ID \
+    $finish_path/$JOB_ID \
+    $log_path/$JOB_ID \
+    > /dev/null 2>&1
 }
 
 worker() {
   local JOB_ID="$1"
 
   job_set_working $JOB_ID "Add to working..."
-
   job_download_url=$(job_get_url $JOB_ID)
-
   if [ $job_download_url == "null" ]; then
     job_set_failed $JOB_ID "URL not found"
     return
   fi
 
+  pre_work_hook $JOB_ID
+
   file_name=$(echo $job_download_url | awk -F/ '{print $NF}')
   end_name=$(echo $file_name | awk -F. '{print $1}')
-
-  pre_work_hook $JOB_ID
 
   job_log $JOB_ID "Starting downloading..."
   curl -s -o $queue_path/$JOB_ID/$file_name $job_download_url & pid_curl=$!
@@ -72,11 +71,11 @@ worker() {
   file_size=$(wc -c $source_path/$JOB_ID/$end_name.mp4 | awk '{print $1}')
   if [ $file_size -lt 1 ]; then
     job_set_failed $JOB_ID "Transcoding error"
-    tar -c -f $end_path/$JOB_ID/$end_name.tar $log_path/$JOB_ID/$end_name.log > /dev/null 2>&1
+    tar -cf $end_path/$JOB_ID/$end_name.tar $log_path/$JOB_ID/$end_name.log > /dev/null 2>&1
     rsync \
-      -e="ssh -p $PESKAR_STORE_PORT" \
+      -e "\"$PESKAR_SYNC_OPTIONS\"" \
       -r $end_path/$JOB_ID/$end_name.tar \
-      $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
+      $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH
     post_work_hook $JOB_ID
     return
   fi
@@ -97,9 +96,9 @@ worker() {
 
   job_log $JOB_ID "Starting copying to remote server..."
   rsync \
-    -e="ssh -p $PESKAR_STORE_PORT" \
+    -e "\"$PESKAR_SYNC_OPTIONS\"" \
     -r $finish_path/$JOB_ID/$end_name.tar \
-    $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
+    $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH
   job_log $JOB_ID "Copying finished"
 
   post_work_hook $JOB_ID
