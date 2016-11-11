@@ -71,10 +71,10 @@ worker() {
   file_size=$(wc -c $source_path/$JOB_ID/$end_name.mp4 | awk '{print $1}')
   if [ $file_size -lt 1 ]; then
     job_set_failed $JOB_ID "Transcoding error"
-    tar -cf $end_path/$JOB_ID/$end_name.tar $log_path/$JOB_ID/$end_name.log > /dev/null 2>&1
+    tar -zcf $end_path/$JOB_ID/logs_$end_name.tar.gz $log_path/$JOB_ID/* > /dev/null 2>&1
     rsync \
       -e "\"$PESKAR_SYNC_OPTIONS\"" \
-      -r $end_path/$JOB_ID/$end_name.tar \
+      -r $end_path/$JOB_ID/logs_$end_name.tar.gz \
       $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH
     post_work_hook $JOB_ID
     return
