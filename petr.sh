@@ -59,11 +59,11 @@ while true; do
     ps_status=`ps -e | grep ffmpeg | wc -l`
   done
 
+  job_log $job_id "Starting transcoding..."
+
   ffmpeg \
         -i $queue_path$job_id/$file_name -c:v libx264 -preset veryfast -g 25 -keyint_min 4\
         -c:a aac -f mp4 $source_path$job_id/$end_name.mp4 > $log_path$job_id/$end_name.log 2>&1 & pid_ffmpeg=$!
-
-  job_log $job_id "Starting transcoding..."
 
   wait $pid_ffmpeg
 
