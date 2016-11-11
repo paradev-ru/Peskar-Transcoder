@@ -8,6 +8,7 @@ user=emedvedev
 queue_path=/home/$user/queue/
 source_path=/home/$user/source/
 end_path=/home/$user/end/
+finish_path=/home/$user/finish/
 log_path=/home/$user/logs/
 
 paradev_path=/home/user/films/
@@ -50,6 +51,7 @@ while true; do
 
   mkdir -p $source_path$job_id/
   mkdir -p $end_path$job_id/
+  mkdir -p $finish_path$job_id/
   mkdir -p $log_path$job_id/
 
   job_log $job_id "Ensure FFmpeg is not running"
@@ -90,15 +92,15 @@ while true; do
 
   job_log $job_id "Creating tarball..."
   tar -z -c -f $end_path$job_id/logs_$end_name.tar.gz $log_path$job_id/* > /dev/null 2>&1
-  tar -c -f $end_path$$end_name.tar $end_path$job_id/$end_name/* > /dev/null 2>&1
+  tar -c -f $finish_path$job_id/$end_name.tar $end_path$job_id/$end_name/* > /dev/null 2>&1
   job_log $job_id "Creating finished"
 
   job_log $job_id "Starting copying to remote server..."
-  rsync -e='ssh -p 3389' -r $end_path$$end_name.tar user@paradev.ru:$paradev_path
+  rsync -e='ssh -p 3389' $$finish_path$job_id/$$end_name.tar user@paradev.ru:$paradev_path
   job_log $job_id "Copying finished"
 
-  rm -r -f queue_path$job_id && rm -r -f $source_path$job_id && rm -r -f $end_path$job_id > /dev/null 2>&1
-  rm -f $end_path$$end_name.tar
+  rm -r -f queue_path$job_id && rm -r -f $source_path$job_id > /dev/null 2>&1
+  rm -r -f $end_path$job_id && rm -r -f $finish_path$job_id > /dev/null 2>&1
   job_set_finished $job_id "Done"
   break
 done
