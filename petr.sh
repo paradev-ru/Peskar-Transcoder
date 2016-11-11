@@ -39,9 +39,9 @@ while true; do
 
   file_name=`echo $job_download_url | awk -F/ '{print $NF}'`
   mkdir $queue_path$job_id
-  curl -s -o $queue_path$job_id/$file_name $job_download_url & pid_curl=$!
-  job_log $job_id "Starting download..."
 
+  job_log $job_id "Starting download..."
+  curl -s -o $queue_path$job_id/$file_name $job_download_url & pid_curl=$!
   wait $pid_curl
 
   job_log $job_id "Downloaded, sending to transcoder..."
@@ -60,11 +60,9 @@ while true; do
   done
 
   job_log $job_id "Starting transcoding..."
-
   ffmpeg \
         -i $queue_path$job_id/$file_name -c:v libx264 -preset veryfast -g 25 -keyint_min 4\
         -c:a aac -f mp4 $source_path$job_id/$end_name.mp4 > $log_path$job_id/$end_name.log 2>&1 & pid_ffmpeg=$!
-
   wait $pid_ffmpeg
 
   file_size=`wc -c $source_path$job_id/$end_name.mp4 | awk '{print $1}'`
@@ -79,12 +77,10 @@ while true; do
   fi
 
   job_log $job_id "Transcoding finished, sending to copying.."
-
   ffmpeg \
         -i $source_path$job_id/$end_name.mp4 -map 0 -c copy -segment_time 3 \
         -segment_list $end_path$job_id/$end_name.m3u8 -f segment \
         $end_path$job_id/$end_name\_%08d.ts > $log_path$job_id/$end_name\_seg.log 2>&1 & pid_ffmpeg=$!
-
   wait $pid_ffmpeg
 
   tar -z -c -f $end_path$job_id/logs_$end_name.tar.gz $log_path$job_id/* > /dev/null 2>&1
