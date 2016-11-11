@@ -77,7 +77,7 @@ while true; do
       -e="ssh -p $PESKAR_STORE_PORT" \
       -r $end_path$job_id/$end_name.tar \
       $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
-    rm -r -f queue_path$job_id && rm -r -f $source_path$job_id && rm -r -f $end_path$job_id > /dev/null 2>&1
+    rm -rf queue_path$job_id && rm -r -f $source_path$job_id && rm -rf $end_path$job_id > /dev/null 2>&1
 
     exit 0
   fi
@@ -92,8 +92,8 @@ while true; do
   job_log $job_id "Segmenting finished"
 
   job_log $job_id "Creating tarball..."
-  tar -z -c -f $end_path$job_id/logs_$end_name.tar.gz $log_path$job_id/* > /dev/null 2>&1
-  tar -c -f $finish_path$job_id/$end_name.tar $end_path$job_id/* > /dev/null 2>&1
+  tar -zcf $end_path$job_id/logs_$end_name.tar.gz $log_path$job_id/* > /dev/null 2>&1
+  tar -cf $finish_path$job_id/$end_name.tar $end_path$job_id/* > /dev/null 2>&1
   job_log $job_id "Creating finished"
 
   job_log $job_id "Starting copying to remote server..."
@@ -103,11 +103,11 @@ while true; do
     $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
   job_log $job_id "Copying finished"
 
-  rm -r -f $queue_path$job_id > /dev/null 2>&1
-  rm -r -f $source_path$job_id > /dev/null 2>&1
-  rm -r -f $end_path$job_id > /dev/null 2>&1
-  rm -r -f $finish_path$job_id > /dev/null 2>&1
-	rm -r -f $log_path$job_id > /dev/null 2>&1
+  rm -rf $queue_path$job_id > /dev/null 2>&1
+  rm -rf $source_path$job_id > /dev/null 2>&1
+  rm -rf $end_path$job_id > /dev/null 2>&1
+  rm -rf $finish_path$job_id > /dev/null 2>&1
+	rm -rf $log_path$job_id > /dev/null 2>&1
 
   job_set_finished $job_id "Done"
   break
