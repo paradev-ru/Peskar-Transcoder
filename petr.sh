@@ -38,19 +38,18 @@ while true; do
   fi
 
   file_name=$(echo $job_download_url | awk -F/ '{print $NF}')
-  mkdir $queue_path$job_id
+  end_name=$(echo $file_name | awk -F. '{print $1}')
+
+  mkdir -p $queue_path$job_id
+  mkdir -p $source_path$job_id/
+  mkdir -p $end_path$job_id/
+  mkdir -p $finish_path$job_id/
+  mkdir -p $log_path$job_id/
 
   job_log $job_id "Starting downloading..."
   curl -s -o $queue_path$job_id/$file_name $job_download_url & pid_curl=$!
   wait $pid_curl
   job_log $job_id "Downloading finished"
-
-  end_name=$(echo $file_name | awk -F. '{print $1}')
-
-  mkdir -p $source_path$job_id/
-  mkdir -p $end_path$job_id/
-  mkdir -p $finish_path$job_id/
-  mkdir -p $log_path$job_id/
 
   job_log $job_id "Ensure FFmpeg is not running"
   sleep 1
@@ -71,13 +70,15 @@ while true; do
   file_size=$(wc -c $source_path$job_id/$end_name.mp4 | awk '{print $1}')
   if [ $file_size -lt 1 ]; then
     job_set_failed $job_id "Transcoding error"
-
     tar -c -f $end_path$job_id/$end_name.tar $log_path$job_id/$end_name.log > /dev/null 2>&1
     rsync \
       -e="ssh -p $PESKAR_STORE_PORT" \
       -r $end_path$job_id/$end_name.tar \
       $PESKAR_STORE_USER@$PESKAR_STORE_HOST:$PESKAR_STORE_PATH
-    rm -rf queue_path$job_id && rm -r -f $source_path$job_id && rm -rf $end_path$job_id > /dev/null 2>&1
+
+    rm -rf $queue_path$job_id > /dev/null 2>&1
+    rm -rf $source_path$job_id > /dev/null 2>&1
+    rm -rf $end_path$job_id > /dev/null 2>&1
 
     exit 0
   fi
