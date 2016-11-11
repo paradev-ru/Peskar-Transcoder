@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# source "functions.sh"
+source "functions.sh"
 
 user=emedvedev
 api_url="http://api.peskar.paradev.ru"
