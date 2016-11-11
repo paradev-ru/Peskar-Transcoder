@@ -43,7 +43,7 @@ worker() {
   end_name=$(echo $file_name | awk -F. '{print $1}')
 
   job_log $JOB_ID "Starting downloading..."
-  curl -s -o $QUEUE_PATH/$file_name $job_download_url & pid_curl=$!
+  curl -so $QUEUE_PATH/$file_name $job_download_url & pid_curl=$!
   wait $pid_curl
   job_log $JOB_ID "Downloading finished"
 
