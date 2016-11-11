@@ -40,10 +40,10 @@ while true; do
   file_name=$(echo $job_download_url | awk -F/ '{print $NF}')
   mkdir $queue_path$job_id
 
-  job_log $job_id "Starting download..."
+  job_log $job_id "Starting downloading..."
   curl -s -o $queue_path$job_id/$file_name $job_download_url & pid_curl=$!
   wait $pid_curl
-  job_log $job_id "Successfully downloaded"
+  job_log $job_id "Downloading finished"
 
   end_name=$(echo $file_name | awk -F. '{print $1}')
 
@@ -56,7 +56,7 @@ while true; do
   ps_status=$(ps -e | grep ffmpeg | wc -l)
   while [ "$ps_status" -gt "0" ]; do
     job_log $job_id "FFmpeg is rinning, sleeping..."
-    sleep 10
+    sleep 30
     ps_status=$(ps -e | grep ffmpeg | wc -l)
   done
   job_log $job_id "FFmpeg is available"
