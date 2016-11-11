@@ -2,6 +2,11 @@
 
 PESKAR_API_URL=${PESKAR_API_URL:-"http://api.peskar.paradev.ru"}
 
+# job_ping
+job_ping() {
+  echo $(curl -sX GET $PESKAR_API_URL/ping/ | jq '.id' | tr -d \")
+}
+
 # job_log JOB_ID "Log message"
 job_log() {
   local JOB_ID="$1"
