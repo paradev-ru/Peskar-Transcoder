@@ -2,8 +2,8 @@
 #
 # Peskar Transcoder
 
-source "env.sh"
-source "api.sh"
+source "/opt/peskar/peskar-transcoder/env.sh"
+source "/opt/peskar/peskar-transcoder/api.sh"
 
 #######################################
 # Peskar transcored worker
