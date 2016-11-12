@@ -54,3 +54,16 @@ log_fail() {
   echo "$@" 1>&2
   exit 1
 }
+
+#######################################
+# Check if program is installed
+# Globals:
+#   None
+# Arguments:
+#   Program name
+# Returns:
+#   Boolean
+#######################################
+installed() {
+  hash "$1" 2>/dev/null
+}

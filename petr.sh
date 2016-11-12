@@ -2,7 +2,7 @@
 #
 # Peskar Transcoder
 
-PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"/opt/peskar/peskar-transcoder"}
+PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"."}
 
 source "$PESKAR_PETR_HOME_PATH/env.sh"
 source "$PESKAR_PETR_HOME_PATH/functions.sh"
@@ -21,6 +21,9 @@ source "$PESKAR_PETR_HOME_PATH/worker.sh"
 main() {
   if [ ! -d "$PESKAR_PETR_HOME_PATH" ]; then
     log_fail "Directory '$PESKAR_PETR_HOME_PATH' doesn't exist."
+  fi
+  if ! installed ffmpeg; then
+    log_fail "FFmpeg does not installed."
   fi
   while true; do
     log_info "Getting new job..."
