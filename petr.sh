@@ -2,7 +2,7 @@
 #
 # Peskar Transcoder
 
-PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"."}
+PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"/opt/peskar/peskar-transcoder"}
 
 source "$PESKAR_PETR_HOME_PATH/env.sh"
 source "$PESKAR_PETR_HOME_PATH/functions.sh"
