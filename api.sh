@@ -143,3 +143,16 @@ job_set_failed() {
   local LOG="$2"
   job_set_state $JOB_ID "failed" "$LOG"
 }
+
+#######################################
+# Get work time state
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   State
+#######################################
+is_work_time() {
+  echo $(curl -sX GET $PESKAR_API_URL/work_time/ | jq '.is_work_time' | tr -d \")
+}

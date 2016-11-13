@@ -26,6 +26,12 @@ main() {
     log_fail "FFmpeg does not installed."
   fi
   while true; do
+    can_work=$(is_work_time)
+    if [ $can_work != "true" ]; then
+      log_info "DND"
+      sleep 30m
+      continue
+    fi
     log_info "Getting new job..."
     job_id=$(job_ping)
     if [ $job_id == "null" ]; then
