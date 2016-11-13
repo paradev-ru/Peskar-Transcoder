@@ -39,7 +39,7 @@ main() {
       sleep 5m
       continue
     fi
-    log_info "Starting a job..."
+    log_info "Starting a job '$job_id'..."
     worker $job_id &
     sleep 1m
   done
