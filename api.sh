@@ -12,7 +12,7 @@
 #   Job ID
 #######################################
 job_ping() {
-  echo $(curl -sX GET $PESKAR_API_URL/ping/ | jq '.id' | tr -d \")
+  echo $(curl -sX GET "${PESKAR_API_URL}/ping/" | jq '.id' | tr -d \")
 }
 
 #######################################
@@ -34,8 +34,8 @@ job_log() {
   fi
   curl \
     -X PUT \
-    -d "{\"log\": \"$DATE: $LOG\"}" \
-    $PESKAR_API_URL/job/$JOB_ID/ > /dev/null 2>&1
+    -d "{\"log\": \"${DATE}: ${LOG}\"}" \
+    "${PESKAR_API_URL}/job/${JOB_ID}/" > /dev/null 2>&1
 }
 
 #######################################
@@ -49,7 +49,7 @@ job_log() {
 #######################################
 job_get_state() {
   local JOB_ID="$1"
-  echo $(curl -sX GET $PESKAR_API_URL/job/$JOB_ID/ | jq '.state' | tr -d \")
+  echo $(curl -sX GET "${PESKAR_API_URL}/job/${JOB_ID}/" | jq '.state' | tr -d \")
 }
 
 #######################################
@@ -63,7 +63,7 @@ job_get_state() {
 #######################################
 job_get_url() {
   local JOB_ID="$1"
-  echo $(curl -sX GET $PESKAR_API_URL/job/$JOB_ID/ | jq '.download_url' | tr -d \")
+  echo $(curl -sX GET "${PESKAR_API_URL}/job/${JOB_ID}/" | jq '.download_url' | tr -d \")
 }
 
 #######################################
@@ -86,14 +86,14 @@ job_set_state() {
     return 0
   fi
   if [[ -z "$LOG" ]]; then
-    LOG="$DATE: Set state $STATE"
+    LOG="${DATE}: Set state ${STATE}"
   else
-    LOG="$DATE: $LOG"
+    LOG="${DATE}: ${LOG}"
   fi
   curl \
     -X PUT \
-    -d "{\"state\": \"$STATE\", \"log\": \"$LOG\"}" \
-    $PESKAR_API_URL/job/$JOB_ID/ > /dev/null 2>&1
+    -d "{\"state\": \"${STATE}\", \"log\": \"${LOG}\"}" \
+    "${PESKAR_API_URL}/job/${JOB_ID}/" > /dev/null 2>&1
 }
 
 #######################################
@@ -109,7 +109,7 @@ job_set_state() {
 job_set_working() {
   local JOB_ID="$1"
   local LOG="$2"
-  job_set_state $JOB_ID "working" "$LOG"
+  job_set_state "${JOB_ID}" "working" "${LOG}"
 }
 
 #######################################
@@ -125,7 +125,7 @@ job_set_working() {
 job_set_finished() {
   local JOB_ID="$1"
   local LOG="$2"
-  job_set_state $JOB_ID "finished" "$LOG"
+  job_set_state "${JOB_ID}" "finished" "${LOG}"
 }
 
 #######################################
@@ -141,7 +141,7 @@ job_set_finished() {
 job_set_failed() {
   local JOB_ID="$1"
   local LOG="$2"
-  job_set_state $JOB_ID "failed" "$LOG"
+  job_set_state "${JOB_ID}" "failed" "${LOG}"
 }
 
 #######################################
@@ -154,5 +154,5 @@ job_set_failed() {
 #   State
 #######################################
 is_work_time() {
-  echo $(curl -sX GET $PESKAR_API_URL/work_time/ | jq '.is_work_time' | tr -d \")
+  echo $(curl -sX GET "${PESKAR_API_URL}/work_time/" | jq '.is_work_time' | tr -d \")
 }
