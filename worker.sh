@@ -58,10 +58,14 @@ worker() {
     -i $QUEUE_PATH/$file_name -c:v libx264 -preset veryfast \
     -g 25 -keyint_min 4 -c:a aac -f mp4 \
     $SOURCE_PATH/$end_name.mp4 > $LOG_PATH/$end_name.log 2>&1 & pid_ffmpeg=$!
+  while [[ "$(ps -p "${pid_ffmpeg}" -o pid=)" -ne 0 ]]; do
+    file_size=$(wc -c $SOURCE_PATH/$end_name.mp4 | awk '{print $1}')
+    job_log "${JOB_ID}" "Transcoding (${file_size})..."
+    sleep 1m
+  done
   wait $pid_ffmpeg
-  file_size=$(wc -c $SOURCE_PATH/$end_name.mp4 | awk '{print $1}')
-  if [ $file_size -lt 1 ]; then
-    job_set_failed $JOB_ID "Transcoding error"
+  if [[ "$?" -ne 0 ]]; then
+    job_set_failed $JOB_ID "Transcoding failed"
     tar -zcf $END_PATH/logs_$end_name.tar.gz $LOG_PATH/* > /dev/null 2>&1
     rsync \
       -e "$PESKAR_SYNC_OPTIONS" \
@@ -78,6 +82,11 @@ worker() {
     -segment_list $END_PATH/$end_name.m3u8 -f segment \
     $END_PATH/$end_name\_%08d.ts > $LOG_PATH/$end_name\_seg.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
+  if [[ "$?" -ne 0 ]]; then
+    job_set_failed $JOB_ID "Segmenting failed"
+    rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
+    return
+  fi
   job_log $JOB_ID "Segmenting finished"
 
   job_log $JOB_ID "Creating tarball..."
