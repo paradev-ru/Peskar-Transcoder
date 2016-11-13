@@ -59,8 +59,11 @@ worker() {
     -g 25 -keyint_min 4 -c:a aac -f mp4 \
     $SOURCE_PATH/$end_name.mp4 > $LOG_PATH/$end_name.log 2>&1 & pid_ffmpeg=$!
   while [[ "$(ps -p "${pid_ffmpeg}" -o pid=)" -ne 0 ]]; do
-    file_size=$(wc -c $SOURCE_PATH/$end_name.mp4 | awk '{print $1}')
-    job_log "${JOB_ID}" "Transcoding (${file_size})..."
+    file_size="0"
+    if [ -f "${SOURCE_PATH}/${end_name}.mp4" ]; then
+      file_size=$(wc -c $SOURCE_PATH/$end_name.mp4 | awk '{print $1}')
+    fi
+    job_log "${JOB_ID}" "Transcoding (${file_size} bytes)..."
     sleep 10s
   done
   wait $pid_ffmpeg
@@ -74,7 +77,8 @@ worker() {
     rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
     return
   fi
-  job_log $JOB_ID "Transcoding finished"
+  file_size=$(wc -c $SOURCE_PATH/$end_name.mp4 | awk '{print $1}')
+  job_log $JOB_ID "Transcoding finished (${file_size} bytes)"
 
   job_log $JOB_ID "Starting segmenting..."
   ffmpeg \
