@@ -61,7 +61,7 @@ worker() {
   while [[ "$(ps -p "${pid_ffmpeg}" -o pid=)" -ne 0 ]]; do
     file_size=$(wc -c $SOURCE_PATH/$end_name.mp4 | awk '{print $1}')
     job_log "${JOB_ID}" "Transcoding (${file_size})..."
-    sleep 1m
+    sleep 10s
   done
   wait $pid_ffmpeg
   if [[ "$?" -ne 0 ]]; then
