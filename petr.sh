@@ -26,6 +26,9 @@ main() {
     log_fail "FFmpeg does not installed."
   fi
   mkdir -p $PESKAR_PETR_HOME_PATH/jobs/
+  if [[ "$?" -ne 0 ]]; then
+    log_fail "Unable create $PESKAR_PETR_HOME_PATH/jobs/ directory"
+  fi
   while true; do
     can_work=$(is_work_time)
     if [ $can_work != "true" ]; then
