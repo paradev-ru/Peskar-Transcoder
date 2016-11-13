@@ -2,6 +2,7 @@
 #
 # Peskar Transcoder
 
+PESKAR_PETR_VERSION="0.1.0-dev"
 PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"/opt/peskar/peskar-transcoder"}
 
 source "${PESKAR_PETR_HOME_PATH}/env.sh"
@@ -10,15 +11,15 @@ source "${PESKAR_PETR_HOME_PATH}/api.sh"
 source "${PESKAR_PETR_HOME_PATH}/worker.sh"
 
 #######################################
-# Entrypoint
+# Init function
 # Globals:
 #   PESKAR_PETR_HOME_PATH
 # Arguments:
-#   $@
+#   None
 # Returns:
 #   None
 #######################################
-main() {
+init() {
   if [ ! -d "${PESKAR_PETR_HOME_PATH}" ]; then
     log_fail "Directory ${PESKAR_PETR_HOME_PATH} doesn't exist."
   fi
@@ -29,6 +30,27 @@ main() {
   if [[ "$?" -ne 0 ]]; then
     log_fail "Unable create ${PESKAR_PETR_HOME_PATH}/jobs/ directory"
   fi
+}
+
+#######################################
+# Entrypoint
+# Globals:
+#   PESKAR_PETR_HOME_PATH
+# Arguments:
+#   Command (optional)
+# Returns:
+#   None
+#######################################
+main() {
+  local COMMAND="$1"
+  case "${COMMAND}" in
+    -v|--version|version)
+    echo "peskar-transcoder ${PESKAR_PETR_VERSION}"
+    exit 0
+    ;;
+  esac
+  log_info "Starting peskar-transcoder"
+  init
   while true; do
     if [[ "$(is_work_time)" != "true" ]]; then
       sleep 10m
