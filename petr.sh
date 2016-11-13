@@ -20,14 +20,14 @@ source "$PESKAR_PETR_HOME_PATH/worker.sh"
 #######################################
 main() {
   if [ ! -d "$PESKAR_PETR_HOME_PATH" ]; then
-    log_fail "Directory '$PESKAR_PETR_HOME_PATH' doesn't exist."
+    log_fail "Directory ${PESKAR_PETR_HOME_PATH} doesn't exist."
   fi
   if ! installed ffmpeg; then
     log_fail "FFmpeg does not installed."
   fi
-  mkdir -p $PESKAR_PETR_HOME_PATH/jobs/
+  mkdir -p "${PESKAR_PETR_HOME_PATH}/jobs/"
   if [[ "$?" -ne 0 ]]; then
-    log_fail "Unable create $PESKAR_PETR_HOME_PATH/jobs/ directory"
+    log_fail "Unable create ${PESKAR_PETR_HOME_PATH}/jobs/ directory"
   fi
   while true; do
     can_work=$(is_work_time)
