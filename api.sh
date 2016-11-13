@@ -32,6 +32,7 @@ job_log() {
   if [[ -z "$LOG" ]]; then
     return 0
   fi
+  log_verbose "${JOB_ID}: ${LOG}"
   curl \
     -X PUT \
     -d "{\"log\": \"${DATE}: ${LOG}\"}" \
@@ -85,8 +86,9 @@ job_set_state() {
   if [[ -z "$STATE" ]]; then
     return 0
   fi
+  log_verbose "${JOB_ID}: Set job state to ${STATE}"
   if [[ -z "$LOG" ]]; then
-    LOG="${DATE}: Set state ${STATE}"
+    LOG="${DATE}: Set job state to ${STATE}"
   else
     LOG="${DATE}: ${LOG}"
   fi
