@@ -74,8 +74,7 @@ worker() {
     rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
     return
   fi
-  file_size=$(wc -c $SOURCE_PATH/$end_name.mp4 | awk '{print $1}')
-  job_log $JOB_ID "Transcoding finished (${file_size} bytes)"
+  job_log $JOB_ID "Transcoding finished"
 
   job_log $JOB_ID "Starting segmenting..."
   ffmpeg \
