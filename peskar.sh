@@ -60,7 +60,7 @@ main() {
     fi
     job_id=$(job_ping)
     if [[ "${job_id}" == "null" ]]; then
-      sleep 30s
+      sleep 10s
       continue
     fi
     log_info "Starting a job ${job_id}..."
