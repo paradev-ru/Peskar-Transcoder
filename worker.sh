@@ -37,7 +37,7 @@ worker() {
   mkdir -p $QUEUE_PATH $SOURCE_PATH $END_PATH $FINISH_PATH $LOG_PATH
 
   file_name=$(echo $job_download_url | awk -F/ '{print $NF}')
-  end_name=$(echo $file_name | awk -F. '{print $1}')
+  end_name="${file_name%.*}"
 
   job_log $JOB_ID "Starting downloading..."
   curl -so $QUEUE_PATH/$file_name $job_download_url & pid_curl=$!
