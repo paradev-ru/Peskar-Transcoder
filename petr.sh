@@ -4,10 +4,10 @@
 
 PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"/opt/peskar/peskar-transcoder"}
 
-source "$PESKAR_PETR_HOME_PATH/env.sh"
-source "$PESKAR_PETR_HOME_PATH/functions.sh"
-source "$PESKAR_PETR_HOME_PATH/api.sh"
-source "$PESKAR_PETR_HOME_PATH/worker.sh"
+source "${PESKAR_PETR_HOME_PATH}/env.sh"
+source "${PESKAR_PETR_HOME_PATH}/functions.sh"
+source "${PESKAR_PETR_HOME_PATH}/api.sh"
+source "${PESKAR_PETR_HOME_PATH}/worker.sh"
 
 #######################################
 # Entrypoint
@@ -19,7 +19,7 @@ source "$PESKAR_PETR_HOME_PATH/worker.sh"
 #   None
 #######################################
 main() {
-  if [ ! -d "$PESKAR_PETR_HOME_PATH" ]; then
+  if [ ! -d "${PESKAR_PETR_HOME_PATH}" ]; then
     log_fail "Directory ${PESKAR_PETR_HOME_PATH} doesn't exist."
   fi
   if ! installed ffmpeg; then
