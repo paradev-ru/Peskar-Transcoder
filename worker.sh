@@ -40,7 +40,7 @@ worker() {
   end_name="${file_name%.*}"
 
   job_log $JOB_ID "Starting downloading..."
-  curl -so $QUEUE_PATH/$file_name $job_download_url & pid_curl=$!
+  curl -sfo $QUEUE_PATH/$file_name $job_download_url & pid_curl=$!
   wait $pid_curl
   if [[ "$?" -ne 0 ]]; then
     job_set_failed $JOB_ID "Downloading failed"
