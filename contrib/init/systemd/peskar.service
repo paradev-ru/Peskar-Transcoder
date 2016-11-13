@@ -7,7 +7,7 @@ After=network.target
 User=peskar
 Group=peskar
 Restart=always
-ExecStart=/opt/peskar/peskar-transcoder/petr.sh
+ExecStart=/opt/peskar/peskar-transcoder/peskar.sh
 
 [Install]
 WantedBy=multi-user.target
