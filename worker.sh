@@ -42,6 +42,11 @@ worker() {
   job_log $JOB_ID "Starting downloading..."
   curl -so $QUEUE_PATH/$file_name $job_download_url & pid_curl=$!
   wait $pid_curl
+  if [[ "$?" -ne 0 ]]; then
+    job_set_failed $JOB_ID "Downloading failed"
+    rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
+    return
+  fi
   job_log $JOB_ID "Downloading finished"
 
   job_log $JOB_ID "Ensure FFmpeg is not running"
@@ -58,14 +63,6 @@ worker() {
     -i $QUEUE_PATH/$file_name -c:v libx264 -preset veryfast \
     -g 25 -keyint_min 4 -c:a aac -f mp4 \
     $SOURCE_PATH/$end_name.mp4 > $LOG_PATH/$end_name.log 2>&1 & pid_ffmpeg=$!
-  while [[ "$(ps -p "${pid_ffmpeg}" -o pid=)" -ne 0 ]]; do
-    file_size="0"
-    if [ -f "${SOURCE_PATH}/${end_name}.mp4" ]; then
-      file_size=$(wc -c $SOURCE_PATH/$end_name.mp4 | awk '{print $1}')
-    fi
-    job_log "${JOB_ID}" "Transcoding (${file_size} bytes)..."
-    sleep 1m
-  done
   wait $pid_ffmpeg
   if [[ "$?" -ne 0 ]]; then
     job_set_failed $JOB_ID "Transcoding failed"
