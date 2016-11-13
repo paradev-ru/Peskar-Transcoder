@@ -25,18 +25,16 @@ main() {
   if ! installed ffmpeg; then
     log_fail "FFmpeg does not installed."
   fi
+  mkdir -p $PESKAR_PETR_HOME_PATH/jobs/
   while true; do
     can_work=$(is_work_time)
     if [ $can_work != "true" ]; then
-      log_info "DND"
-      sleep 30m
+      sleep 10m
       continue
     fi
-    log_info "Getting new job..."
     job_id=$(job_ping)
     if [ $job_id == "null" ]; then
-      log_verbose "Nothing found, sleeping for a 5m..."
-      sleep 5m
+      sleep 30s
       continue
     fi
     log_info "Starting a job '$job_id'..."

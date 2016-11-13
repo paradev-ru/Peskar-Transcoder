@@ -17,11 +17,11 @@
 worker() {
   local JOB_ID="$1"
 
-  local QUEUE_PATH="$PESKAR_PETR_HOME_PATH/$JOB_ID/queue"
-  local SOURCE_PATH="$PESKAR_PETR_HOME_PATH/$JOB_ID/source"
-  local END_PATH="$PESKAR_PETR_HOME_PATH/$JOB_ID/end"
-  local FINISH_PATH="$PESKAR_PETR_HOME_PATH/$JOB_ID/finish"
-  local LOG_PATH="$PESKAR_PETR_HOME_PATH/$JOB_ID/logs"
+  local QUEUE_PATH="$PESKAR_PETR_HOME_PATH/jobs/$JOB_ID/queue"
+  local SOURCE_PATH="$PESKAR_PETR_HOME_PATH/jobs/$JOB_ID/source"
+  local END_PATH="$PESKAR_PETR_HOME_PATH/jobs/$JOB_ID/end"
+  local FINISH_PATH="$PESKAR_PETR_HOME_PATH/jobs/$JOB_ID/finish"
+  local LOG_PATH="$PESKAR_PETR_HOME_PATH/jobs/$JOB_ID/logs"
 
   if [[ -z "$JOB_ID" ]]; then
     return
