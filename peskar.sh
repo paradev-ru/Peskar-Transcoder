@@ -4,6 +4,7 @@
 
 PESKAR_PETR_VERSION="0.1.0-dev"
 PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"/opt/peskar/peskar-transcoder"}
+PESKAR_PETR_JOBS_PATH=${PESKAR_PETR_JOBS_PATH:-"$PESKAR_PETR_HOME_PATH/jobs"}
 
 source "${PESKAR_PETR_HOME_PATH}/env.sh"
 source "${PESKAR_PETR_HOME_PATH}/functions.sh"
@@ -14,6 +15,7 @@ source "${PESKAR_PETR_HOME_PATH}/worker.sh"
 # Init function
 # Globals:
 #   PESKAR_PETR_HOME_PATH
+#   PESKAR_PETR_JOBS_PATH
 # Arguments:
 #   None
 # Returns:
@@ -26,9 +28,9 @@ init() {
   if ! installed ffmpeg; then
     log_fail "FFmpeg does not installed."
   fi
-  mkdir -p "${PESKAR_PETR_HOME_PATH}/jobs/"
+  mkdir -p "${PESKAR_PETR_JOBS_PATH}"
   if [[ "$?" -ne 0 ]]; then
-    log_fail "Unable create ${PESKAR_PETR_HOME_PATH}/jobs/ directory"
+    log_fail "Unable create ${PESKAR_PETR_JOBS_PATH} directory"
   fi
 }
 

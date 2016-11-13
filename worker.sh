@@ -5,7 +5,7 @@
 #######################################
 # Peskar transcored worker
 # Globals:
-#   PESKAR_PETR_HOME_PATH
+#   PESKAR_PETR_JOBS_PATH
 #   PESKAR_SYNC_TARGET
 #   PESKAR_SYNC_PATH
 #   PESKAR_SYNC_OPTIONS
@@ -17,11 +17,11 @@
 worker() {
   local JOB_ID="$1"
 
-  local QUEUE_PATH="$PESKAR_PETR_HOME_PATH/jobs/$JOB_ID/queue"
-  local SOURCE_PATH="$PESKAR_PETR_HOME_PATH/jobs/$JOB_ID/source"
-  local END_PATH="$PESKAR_PETR_HOME_PATH/jobs/$JOB_ID/end"
-  local FINISH_PATH="$PESKAR_PETR_HOME_PATH/jobs/$JOB_ID/finish"
-  local LOG_PATH="$PESKAR_PETR_HOME_PATH/jobs/$JOB_ID/logs"
+  local QUEUE_PATH="$PESKAR_PETR_JOBS_PATH/$JOB_ID/queue"
+  local SOURCE_PATH="$PESKAR_PETR_JOBS_PATH/$JOB_ID/source"
+  local END_PATH="$PESKAR_PETR_JOBS_PATH/$JOB_ID/end"
+  local FINISH_PATH="$PESKAR_PETR_JOBS_PATH/$JOB_ID/finish"
+  local LOG_PATH="$PESKAR_PETR_JOBS_PATH/$JOB_ID/logs"
 
   if [[ -z "$JOB_ID" ]]; then
     return
@@ -67,7 +67,7 @@ worker() {
       -e "$PESKAR_SYNC_OPTIONS" \
       -r $END_PATH/logs_$end_name.tar.gz \
       $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH
-    rm -rf $PESKAR_PETR_HOME_PATH/$JOB_ID
+    rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
     return
   fi
   job_log $JOB_ID "Transcoding finished"
@@ -92,7 +92,7 @@ worker() {
     $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH
   job_log $JOB_ID "Copying finished"
 
-  rm -rf $PESKAR_PETR_HOME_PATH/$JOB_ID
+  rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
 
   job_set_finished $JOB_ID "Done"
 }
