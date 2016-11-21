@@ -49,6 +49,13 @@ worker() {
   fi
   job_log $JOB_ID "Downloading finished"
 
+  maper
+  if [[ "$?" -ne 0 ]]; then
+    job_set_failed $JOB_ID "maping failed"
+    rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
+    return
+  fi
+
   job_log $JOB_ID "Ensure FFmpeg is not running"
   ps_status=$(ps -e | grep ffmpeg | wc -l)
   while [ "$ps_status" -gt "0" ]; do
@@ -60,7 +67,7 @@ worker() {
 
   job_log $JOB_ID "Starting transcoding..."
   ffmpeg \
-    -i $QUEUE_PATH/$file_name -c:v libx264 -preset veryfast \
+    -i $QUEUE_PATH/$file_name -map $m_video -map $m_audio -c:v libx264 -preset veryfast \
     -g 25 -keyint_min 4 -c:a aac -f mp4 \
     $SOURCE_PATH/$end_name.mp4 > $LOG_PATH/$end_name.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
