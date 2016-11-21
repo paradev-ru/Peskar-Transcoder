@@ -51,7 +51,7 @@ worker() {
 
   maper $JOB_ID $QUEUE_PATH/$file_name
   if [[ "$?" -ne 0 ]]; then
-    job_set_failed $JOB_ID "maping failed"
+    job_set_failed $JOB_ID "Mapping failed"
     rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
     return
   fi
