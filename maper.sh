@@ -38,4 +38,6 @@ maper() {
       return 2
     fi
   fi
+  job_log "Video stream: $m_video"
+  job_log "Audio stream: $m_audio"
 }
