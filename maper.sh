@@ -17,7 +17,7 @@
 #######################################
 maper(){
   while true ;do
-    m_video="${ffprobe $file_name 2>&1 | grep Video | awk '{print $2}' | cut -c 2-4}"
+    m_video="${ffprobe $file_name 2>&1 | grep Video | awk '{print $2}' | sed -ne 1p | cut -c 2-4}"
       if [[ "$?" -ne 0 ]]; then
         job_set_failed $JOB_ID "err found video stream"
         return 1
