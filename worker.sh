@@ -55,6 +55,8 @@ worker() {
     rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
     return
   fi
+  job_log $JOB_ID "Video stream: $m_video"
+  job_log $JOB_ID "Audio stream: $m_audio"
 
   job_log $JOB_ID "Ensure FFmpeg is not running"
   ps_status=$(ps -e | grep ffmpeg | wc -l)
