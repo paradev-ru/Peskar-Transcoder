@@ -49,7 +49,7 @@ worker() {
   fi
   job_log $JOB_ID "Downloading finished"
 
-  maper
+  maper $JOB_ID $QUEUE_PATH/$file_name
   if [[ "$?" -ne 0 ]]; then
     job_set_failed $JOB_ID "maping failed"
     rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
