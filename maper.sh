@@ -37,8 +37,8 @@ maper() {
       job_set_failed $JOB_ID "Audio stream not found"
       return 2
     fi
-    m_audio=$(echo -n $m_audio_any)
+    m_audio="$m_audio_any"
     return
   fi
-  m_audio=$(echo -n $m_audio_rus)
+  m_audio="$m_audio_rus"
 }
