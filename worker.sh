@@ -68,7 +68,7 @@ worker() {
   job_log $JOB_ID "Starting transcoding..."
   ffmpeg \
     -i $QUEUE_PATH/$file_name -map $m_video -map $m_audio -c:v libx264 -preset veryfast \
-    -g 25 -keyint_min 4 -c:a aac -f mp4 \
+    -g 25 -keyint_min 4 -c:a ac3 -f mp4 \
     $SOURCE_PATH/$end_name.mp4 > $LOG_PATH/$end_name.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
   if [[ "$?" -ne 0 ]]; then
