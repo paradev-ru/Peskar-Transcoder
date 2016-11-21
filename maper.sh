@@ -7,7 +7,8 @@
 # Globals:
 #   None
 # Arguments:
-#   file_name
+#   Job ID
+#   Video file
 # Returns:
 #   None
 #######################################
