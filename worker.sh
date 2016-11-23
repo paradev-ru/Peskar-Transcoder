@@ -68,10 +68,15 @@ worker() {
   job_log $JOB_ID "FFmpeg is available"
 
   job_log $JOB_ID "Starting transcoding..."
+  echo -e "ffmpeg \
+    -i $QUEUE_PATH/$file_name -map $m_video -map $m_audio -c:v libx264 -preset veryfast \
+    -g 25 -keyint_min 4 -c:a aac -f mp4 \
+    $SOURCE_PATH/$end_name.mp4" > $LOG_PATH/$end_name.log
+
   ffmpeg \
     -i $QUEUE_PATH/$file_name -map $m_video -map $m_audio -c:v libx264 -preset veryfast \
     -g 25 -keyint_min 4 -c:a aac -f mp4 \
-    $SOURCE_PATH/$end_name.mp4 > $LOG_PATH/$end_name.log 2>&1 & pid_ffmpeg=$!
+    $SOURCE_PATH/$end_name.mp4 >> $LOG_PATH/$end_name.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
   if [[ "$?" -ne 0 ]]; then
     job_set_failed $JOB_ID "Transcoding failed"
@@ -86,11 +91,6 @@ worker() {
   job_log $JOB_ID "Transcoding finished"
 
   job_log $JOB_ID "Starting segmenting..."
-  echo -e "ffmpeg \
-    -i $SOURCE_PATH/$end_name.mp4 -map 0 -c copy -segment_time 3 \
-    -segment_list $END_PATH/$end_name.m3u8 -f segment \
-    $END_PATH/$end_name\_%08d.ts" > $LOG_PATH/$end_name\_seg.log 2>&1
-
   ffmpeg \
     -i $SOURCE_PATH/$end_name.mp4 -map 0 -c copy -segment_time 3 \
     -segment_list $END_PATH/$end_name.m3u8 -f segment \
