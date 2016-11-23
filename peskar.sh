@@ -9,7 +9,7 @@ PESKAR_PETR_JOBS_PATH=${PESKAR_PETR_JOBS_PATH:-"$PESKAR_PETR_HOME_PATH/jobs"}
 source "${PESKAR_PETR_HOME_PATH}/env.sh"
 source "${PESKAR_PETR_HOME_PATH}/functions.sh"
 source "${PESKAR_PETR_HOME_PATH}/api.sh"
-source "${PESKAR_PETR_HOME_PATH}/maper.sh"
+source "${PESKAR_PETR_HOME_PATH}/mapper.sh"
 source "${PESKAR_PETR_HOME_PATH}/worker.sh"
 
 #######################################

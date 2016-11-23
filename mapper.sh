@@ -12,7 +12,7 @@
 # Returns:
 #   None
 #######################################
-maper() {
+mapper() {
   local JOB_ID="$1"
   local FILENAME="$2"
   m_video=$(ffprobe $FILENAME 2>&1 | grep Video | awk '{print $2}' | sed -ne 1p | cut -c 2-4)
