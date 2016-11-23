@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# Perform Peskar maper stream
+# Perform Peskar mapper stream
 
 #######################################
-# Peskar maper stream
+# Peskar mapper stream
 # Globals:
 #   None
 # Arguments:
