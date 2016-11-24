@@ -23,7 +23,7 @@ mapper() {
     job_set_failed $JOB_ID "Video stream not found"
     return 2
   fi
-  m_audio=$(ffprobe $FILENAME 2>&1 | grep rus | grep Audio | awk '{print $2}' | cut -c 2-4)
+  m_audio=$(ffprobe $FILENAME 2>&1 | grep rus | grep Audio | sed -ne 1p | awk '{print $2}' | cut -c 2-4)
   if [[ "$?" -ne 0 ]]; then
     job_set_failed $JOB_ID "Failed to execute FFprobe (Audio/Rus)"
     return 1
