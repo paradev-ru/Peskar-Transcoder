@@ -131,6 +131,12 @@ worker() {
     rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
     return
   fi
+  wait $pid_curl
+  if [[ "$?" -ne 0 ]]; then
+    job_set_failed $JOB_ID "Uploading failed"
+    rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
+    return
+  fi
   job_log $JOB_ID "Copying finished"
 
   rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
