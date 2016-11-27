@@ -41,6 +41,12 @@ worker() {
 
   job_log $JOB_ID "Starting downloading..."
   curl -sfo $QUEUE_PATH/$file_name $job_download_url & pid_curl=$!
+  watcher $JOB_ID $pid_curl
+  if [[ "$?" -ne 0 ]]; then
+    job_log $JOB_ID "watcher kill pid"
+    rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
+    return
+  fi
   wait $pid_curl
   if [[ "$?" -ne 0 ]]; then
     job_set_failed $JOB_ID "Downloading failed"
