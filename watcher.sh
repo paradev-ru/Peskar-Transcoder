@@ -2,8 +2,6 @@
 #
 # Perform Peskar watcher pid
 
-set -x
-
 #######################################
 # Peskar watcher pid
 # Globals:
