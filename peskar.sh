@@ -2,14 +2,16 @@
 #
 # Peskar Transcoder
 
-PESKAR_PETR_VERSION="0.1.1-dev"
+PESKAR_PETR_VERSION="0.1.2-dev"
 PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"/opt/peskar/peskar-transcoder"}
+# PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"/home/emedvedev/peskar-transcoder"}  # DEV PATH
 PESKAR_PETR_JOBS_PATH=${PESKAR_PETR_JOBS_PATH:-"$PESKAR_PETR_HOME_PATH/jobs"}
 
 source "${PESKAR_PETR_HOME_PATH}/env.sh"
 source "${PESKAR_PETR_HOME_PATH}/functions.sh"
 source "${PESKAR_PETR_HOME_PATH}/api.sh"
 source "${PESKAR_PETR_HOME_PATH}/mapper.sh"
+source "${PESKAR_PETR_HOME_PATH}/watcher.sh"
 source "${PESKAR_PETR_HOME_PATH}/worker.sh"
 
 #######################################

@@ -41,6 +41,12 @@ worker() {
 
   job_log $JOB_ID "Starting downloading..."
   curl -sfo $QUEUE_PATH/$file_name $job_download_url & pid_curl=$!
+  watcher $JOB_ID $pid_curl
+  if [[ "$?" -ne 0 ]]; then
+    job_log $JOB_ID "watcher kill pid"
+    rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
+    return
+  fi
   wait $pid_curl
   if [[ "$?" -ne 0 ]]; then
     job_set_failed $JOB_ID "Downloading failed"
@@ -77,6 +83,12 @@ worker() {
     -i $QUEUE_PATH/$file_name -map $m_video -map $m_audio -c:v libx264 -preset veryfast \
     -g 25 -keyint_min 4 -c:a aac -f mp4 \
     $SOURCE_PATH/$end_name.mp4 >> $LOG_PATH/$end_name.log 2>&1 & pid_ffmpeg=$!
+  watcher $JOB_ID $pid_ffmpeg
+  if [[ "$?" -ne 0 ]]; then
+    job_log $JOB_ID "watcher kill pid"
+    rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
+    return
+  fi
   wait $pid_ffmpeg
   if [[ "$?" -ne 0 ]]; then
     job_set_failed $JOB_ID "Transcoding failed"
@@ -112,7 +124,13 @@ worker() {
   rsync \
     -e "$PESKAR_SYNC_OPTIONS" \
     -r $FINISH_PATH/$end_name.tar \
-    $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH
+    $PESKAR_SYNC_TARGET:$PESKAR_SYNC_PATH & pid_rsync=$!
+  watcher $JOB_ID $pid_rsync
+  if [[ "$?" -ne 0 ]]; then
+    job_log $JOB_ID "watcher kill pid"
+    rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
+    return
+  fi
   job_log $JOB_ID "Copying finished"
 
   rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
