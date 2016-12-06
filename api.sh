@@ -28,15 +28,14 @@ job_ping() {
 job_log() {
   local JOB_ID="$1"
   local LOG="$2"
-  local DATE=$(date +%Y-%m-%dT%T%Z)
   if [[ -z "$LOG" ]]; then
     return 0
   fi
   log_verbose "${JOB_ID}: ${LOG}"
   curl \
-    -X PUT \
-    -d "{\"log\": \"${DATE}: ${LOG}\"}" \
-    "${PESKAR_API_URL}/job/${JOB_ID}/" > /dev/null 2>&1
+    -X POST \
+    -d "{\"message\": \"${LOG}\"}" \
+    "${PESKAR_API_URL}/job/${JOB_ID}/log/" > /dev/null 2>&1
 }
 
 #######################################
@@ -74,27 +73,19 @@ job_get_url() {
 # Arguments:
 #   Job ID
 #   State
-#   Log message (optional)
 # Returns:
 #   None
 #######################################
-job_set_state() {
+job_state() {
   local JOB_ID="$1"
   local STATE="$2"
-  local LOG="$3"
-  local DATE=$(date +%Y-%m-%dT%T%Z)
   if [[ -z "$STATE" ]]; then
     return 0
   fi
   log_verbose "${JOB_ID}: Set job state to ${STATE}"
-  if [[ -z "$LOG" ]]; then
-    LOG="${DATE}: Set job state to ${STATE}"
-  else
-    LOG="${DATE}: ${LOG}"
-  fi
   curl \
     -X PUT \
-    -d "{\"state\": \"${STATE}\", \"log\": \"${LOG}\"}" \
+    -d "{\"state\": \"${STATE}\"}" \
     "${PESKAR_API_URL}/job/${JOB_ID}/" > /dev/null 2>&1
 }
 
@@ -111,7 +102,8 @@ job_set_state() {
 job_set_working() {
   local JOB_ID="$1"
   local LOG="$2"
-  job_set_state "${JOB_ID}" "working" "${LOG}"
+  job_log "${JOB_ID}" "${LOG}"
+  job_state "${JOB_ID}" "working"
 }
 
 #######################################
@@ -127,7 +119,8 @@ job_set_working() {
 job_set_finished() {
   local JOB_ID="$1"
   local LOG="$2"
-  job_set_state "${JOB_ID}" "finished" "${LOG}"
+  job_log "${JOB_ID}" "${LOG}"
+  job_state "${JOB_ID}" "finished"
 }
 
 #######################################
@@ -143,7 +136,8 @@ job_set_finished() {
 job_set_failed() {
   local JOB_ID="$1"
   local LOG="$2"
-  job_set_state "${JOB_ID}" "failed" "${LOG}"
+  job_log "${JOB_ID}" "${LOG}"
+  job_state "${JOB_ID}" "failed"
 }
 
 #######################################
