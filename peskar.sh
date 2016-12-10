@@ -57,10 +57,6 @@ main() {
   log_info "Starting peskar-transcoder"
   init
   while true; do
-    if [[ "$(is_work_time)" != "true" ]]; then
-      sleep 10m
-      continue
-    fi
     job_id=$(job_ping)
     if [[ "${job_id}" == "null" ]]; then
       sleep 10s
