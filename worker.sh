@@ -24,14 +24,14 @@ worker() {
   local LOG_PATH="$PESKAR_PETR_JOBS_PATH/$JOB_ID/logs"
 
   if [[ -z "$JOB_ID" ]]; then
-    return
+    return 0
   fi
 
   job_set_working $JOB_ID "Add to working..."
   job_download_url=$(job_get_url $JOB_ID)
   if [ $job_download_url == "null" ]; then
     job_set_failed $JOB_ID "URL not found"
-    return
+    return 0
   fi
 
   mkdir -p $QUEUE_PATH $SOURCE_PATH $END_PATH $FINISH_PATH $LOG_PATH
@@ -45,13 +45,13 @@ worker() {
   if [[ "$?" -ne 0 ]]; then
     job_log $JOB_ID "watcher kill pid"
     rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
-    return
+    return 1
   fi
   wait $pid_curl
   if [[ "$?" -ne 0 ]]; then
     job_set_failed $JOB_ID "Downloading failed"
     rm -rf $PESKAR_PETR_JOBS_PATH/$JOB_ID
-    return
+    return 1
   fi
   job_log $JOB_ID "Downloading finished"
 
