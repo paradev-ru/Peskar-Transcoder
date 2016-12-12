@@ -17,6 +17,7 @@
 worker() {
   local JOB_ID="$1"
 
+  local JOB_PATH="$PESKAR_PETR_JOBS_PATH/$JOB_ID"
   local QUEUE_PATH="$PESKAR_PETR_JOBS_PATH/$JOB_ID/queue"
   local SOURCE_PATH="$PESKAR_PETR_JOBS_PATH/$JOB_ID/source"
   local END_PATH="$PESKAR_PETR_JOBS_PATH/$JOB_ID/end"
@@ -28,6 +29,7 @@ worker() {
   fi
 
   job_set_working $JOB_ID "Add to working..."
+
   job_download_url=$(job_get_url $JOB_ID)
   if [ $job_download_url == "null" ]; then
     job_set_failed $JOB_ID "URL not found"
