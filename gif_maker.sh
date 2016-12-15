@@ -2,9 +2,8 @@
 
 # JOB_ID="$1"
 
-set -x
-
 FILM="$1"
+FPS=5
 
 HOURS=$(($(ffprobe $FILM 2>&1 | grep Duration | awk '{print $2}' | awk -F: '{print $1}') * 60))
 MINUTS=$(ffprobe $FILM 2>&1 | grep Duration | awk '{print $2}' | awk -F: '{print $2}')
@@ -18,7 +17,7 @@ _MM=01
 MIN=01
 NUM=$MIN
 
-PLUS_ONE (){
+plus_one (){
   MIN=$(($MIN + 1))
   NUM=$(printf %02d $MIN)
 }
@@ -29,13 +28,13 @@ while [ $MIN -le $DURATION ]; do
   if [ $_MM -eq "59" ];then
     _MM=00
     _HH=$(printf %02d $(($_HH + 1)))
-    PLUS_ONE
+    plus_one
     continue
   fi
   _MM=$(($_MM + 1))
-  PLUS_ONE
+  plus_one
 done
 
-ffmpeg -i $NAME\/$NAME\_\%02d.png \
-      -r 10 -f gif $NAME\.gif
+ffmpeg -r $FPS -i $NAME\/$NAME\_%02d.png \
+      -r $FPS -vf scale=300:-1 -gifflags +transdiff -y $NAME\.gif
 
