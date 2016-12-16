@@ -2,37 +2,45 @@
 
 # JOB_ID="$1"
 
+ set -x
+
 FILM="$1"
-FPS=5
+FPS=4
+SUM_FRAME=15
 
 HOURS=$(($(ffprobe $FILM 2>&1 | grep Duration | awk '{print $2}' | awk -F: '{print $1}') * 60))
 MINUTS=$(ffprobe $FILM 2>&1 | grep Duration | awk '{print $2}' | awk -F: '{print $2}')
-DURATION=$(($HOURS + $MINUTS))
+DURATION=$((($HOURS + $MINUTS) * 60 ))
+STEP=$(($DURATION / $SUM_FRAME))
 
 NAME="${FILM%.*}"
 mkdir -p $NAME
 
-_HH=00
-_MM=01
-MIN=01
-NUM=$MIN
+echo $DURATION
+echo $STEP
 
-plus_one (){
-  MIN=$(($MIN + 1))
-  NUM=$(printf %02d $MIN)
+convertsecs() {
+ ((h=${1}/3600))
+ ((m=(${1}%3600)/60))
+ ((s=${1}%60))
+ _TIME=$(printf "%02d:%02d:%02d\n" $h $m $s)
 }
 
-while [ $MIN -le $DURATION ]; do
-  ffmpeg -v warning -ss $_HH:$_MM:00.00 -t 1 -r 1 \
+plus_one (){
+  FRAME=$(($FRAME + $STEP))
+  SEQ=$(($SEQ + 1))
+  NUM=$(printf %02d $SEQ)
+}
+
+FRAME=1
+SEQ=01
+_TIME="00:00:01"
+
+while [ $FRAME -le $DURATION ]; do
+  ffmpeg -v warning -ss $_TIME\.00 -t 1 -r 1 \
         -i $FILM -f image2 $NAME\/$NAME\_$NUM.png
-  if [ $_MM -eq "59" ];then
-    _MM=00
-    _HH=$(printf %02d $(($_HH + 1)))
-    plus_one
-    continue
-  fi
-  _MM=$(($_MM + 1))
   plus_one
+  convertsecs $FRAME
 done
 
 ffmpeg -r $FPS -i $NAME\/$NAME\_%02d.png \
