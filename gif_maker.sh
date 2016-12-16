@@ -11,7 +11,6 @@
 # Returns:
 #   Job ID
 #######################################
-
 gif_maker () {
   local JOB_ID="$1"
   local FILM="$2"

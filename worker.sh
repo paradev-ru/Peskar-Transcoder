@@ -122,6 +122,7 @@ worker() {
   fi
   job_log $JOB_ID "Segmenting finished"
 
+  job_log $JOB_ID "Starting create GIF"
   gif_maker $JOB_ID $QUEUE_PATH/$file_name $end_name
   if [[ "$?" -eq 0 ]]; then
     job_log $JOB_ID "GIF created"
