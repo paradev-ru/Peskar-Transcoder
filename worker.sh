@@ -3,7 +3,7 @@
 # Perform Peskar worker
 
 #######################################
-# Peskar transcored worker
+# Peskar transcoder worker
 # Globals:
 #   PESKAR_PETR_JOBS_PATH
 #   PESKAR_SYNC_TARGET
