@@ -122,6 +122,11 @@ worker() {
   fi
   job_log $JOB_ID "Segmenting finished"
 
+  gif_maker $JOB_ID $QUEUE_PATH/$file_name $end_name
+  if [[ "$?" -eq 0 ]]; then
+    job_log $JOB_ID "GIF created"
+  fi
+
   job_log $JOB_ID "Creating tarball..."
   tar -zcf $END_PATH/logs_$end_name.tar.gz $LOG_PATH/* > /dev/null 2>&1
   tar -cf $FINISH_PATH/$end_name.tar $END_PATH/* > /dev/null 2>&1
