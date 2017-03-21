@@ -82,13 +82,13 @@ worker() {
 
   job_log $JOB_ID "Starting transcoding..."
   echo -e "ffmpeg \
-    -i $QUEUE_PATH/$file_name -map $m_video -map $m_audio -c:v libx264 -preset veryfast \
-    -g 25 -keyint_min 4 -c:a aac -b:a 256K -f mp4 \
+    -i $QUEUE_PATH/$file_name -map $m_video -map $m_audio -c:v libx264 -profile:v high -level 4.0 \
+    -g 25 -keyint_min 4 -c:a aac -b:a 320K -f mp4 \
     $SOURCE_PATH/$end_name.mp4" > $LOG_PATH/$end_name.log
 
   ffmpeg \
     -i $QUEUE_PATH/$file_name -map $m_video -map $m_audio -c:v libx264 -profile:v high -level 4.0 \
-    -g 25 -keyint_min 4 -c:a aac -b:a 256K -f mp4 \
+    -g 25 -keyint_min 4 -c:a aac -b:a 320K -f mp4 \
     $SOURCE_PATH/$end_name.mp4 >> $LOG_PATH/$end_name.log 2>&1 & pid_ffmpeg=$!
   watcher $JOB_ID $pid_ffmpeg
   if [[ "$?" -ne 0 ]]; then
