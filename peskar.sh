@@ -2,7 +2,7 @@
 #
 # Peskar Transcoder
 
-PESKAR_PETR_VERSION="0.1.3-dev"
+PESKAR_PETR_VERSION="0.1.4-dev"
 PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"/opt/peskar/peskar-transcoder"}
 # PESKAR_PETR_HOME_PATH=${PESKAR_PETR_HOME_PATH:-"/home/emedvedev/petr-test"}  # DEV PATH
 PESKAR_PETR_JOBS_PATH=${PESKAR_PETR_JOBS_PATH:-"$PESKAR_PETR_HOME_PATH/jobs"}
