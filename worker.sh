@@ -87,8 +87,8 @@ worker() {
     $SOURCE_PATH/$end_name.mp4" > $LOG_PATH/$end_name.log
 
   ffmpeg \
-    -i $QUEUE_PATH/$file_name -map $m_video -map $m_audio -c:v libx264 -preset veryfast \
-    -g 25 -keyint_min 4 -c:a aac -f mp4 \
+    -i $QUEUE_PATH/$file_name -map $m_video -map $m_audio -c:v libx264 -profile:v high -level 4.0 \
+    -g 25 -keyint_min 4 -c:a aac -q:a 1 -f mp4 \
     $SOURCE_PATH/$end_name.mp4 >> $LOG_PATH/$end_name.log 2>&1 & pid_ffmpeg=$!
   watcher $JOB_ID $pid_ffmpeg
   if [[ "$?" -ne 0 ]]; then
@@ -111,7 +111,7 @@ worker() {
 
   job_log $JOB_ID "Starting segmenting..."
   ffmpeg \
-    -i $SOURCE_PATH/$end_name.mp4 -map 0 -c copy -segment_time 3 \
+    -i $SOURCE_PATH/$end_name.mp4 -map 0 -c copy -bsf:v h264_mp4toannexb -segment_time 3 \
     -segment_list $END_PATH/$end_name.m3u8 -f segment \
     $END_PATH/$end_name\_%08d.ts > $LOG_PATH/$end_name\_seg.log 2>&1 & pid_ffmpeg=$!
   wait $pid_ffmpeg
