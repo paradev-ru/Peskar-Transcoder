@@ -50,6 +50,7 @@ gif_maker () {
           -i $FILM -f image2 $JOB_PATH\/PNG\/$NAME\_$NUM.png
     if [[ "$?" -ne 0 ]]; then
       job_set_failed $JOB_ID "Created png #$NUM failed"
+      return 1
     fi
     plus_one
     convertsecs $FRAME
