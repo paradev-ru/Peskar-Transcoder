@@ -19,7 +19,9 @@ gif_maker () {
   local SUM_FRAME=15
 
   local HOURS=$(ffprobe $FILM 2>&1 | grep Duration | awk '{print $2}' | awk -F: '{print $1}')
+  local HOURS=${HOURS#0}
   local MINUTS=$(ffprobe $FILM 2>&1 | grep Duration | awk '{print $2}' | awk -F: '{print $2}')
+  local MINUTS=${MINUTS#0}
   local DURATION=$((($HOURS * 60 + $MINUTS) * 60 ))
   local STEP=$(($DURATION / $SUM_FRAME))
 
